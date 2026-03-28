@@ -23,13 +23,42 @@
             min-height: 100vh;
             display: flex;
             background: #fff;
+            transition: background 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
+
+        body.win-mode { background: #0a0a0f; }
 
         .holo-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
             background: linear-gradient(135deg, #f8faff, #fffcfc, #fcfcfc);
+            transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        body.win-mode .holo-bg { 
+            filter: saturate(4) brightness(0.3) blur(20px);
+            transform: scale(1.2);
+        }
+
+        /* Bloom Effect */
+        .bloom-aura {
+            position: fixed;
+            top: 50%; left: 50%;
+            width: 100vmax; height: 100vmax;
+            background: radial-gradient(circle, rgba(112, 0, 255, 0.4) 0%, rgba(255, 0, 255, 0.2) 30%, transparent 70%);
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 5;
+            pointer-events: none;
+            transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1), opacity 1.2s;
+            opacity: 0;
+        }
+
+        body.win-mode .bloom-aura { transform: translate(-50%, -50%) scale(1.5); opacity: 1; animation: auroraRotate 10s linear infinite; }
+
+        @keyframes auroraRotate {
+            from { transform: translate(-50%, -50%) scale(1.5) rotate(0deg); }
+            to { transform: translate(-50%, -50%) scale(1.5) rotate(360deg); }
         }
 
         /* Desktop Sidebar */
@@ -97,8 +126,8 @@
         .choice-value span:last-child {
             font-family: 'Quicksand', sans-serif;
             font-style: normal;
-            font-size: 0.8rem;
-            opacity: 0.5;
+            font-size: 1.2rem;
+            opacity: 0.3;
             transition: transform 0.4s;
         }
 
@@ -200,6 +229,14 @@
             flex-direction: column;
             justify-content: center;
             padding: 80px;
+            transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+            z-index: 10;
+        }
+
+        .canvas.bloom {
+            box-shadow: 0 50px 150px rgba(112, 0, 255, 0.4), 0 0 100px rgba(0, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #fff;
         }
 
         .canvas::before {
@@ -212,7 +249,7 @@
         .bookmark-timer {
             position: absolute;
             top: 0; right: 40px;
-            width: 200px; height: 80px;
+            width: 200px; height: 110px;
             border-left: 1px solid var(--border);
             border-right: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
@@ -223,24 +260,72 @@
             gap: 15px;
         }
 
-        .time-adjust { background: transparent; border: none; color: var(--text-dim); font-size: 1.4rem; cursor: pointer; opacity: 0.4; line-height: 1; padding: 5px; width: 30px; }
+        .time-adjust { background: transparent; border: none; color: var(--text-dim); font-size: 1.8rem; cursor: pointer; opacity: 0.4; line-height: 1; padding: 0; width: 30px; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
         .time-adjust:hover { opacity: 1; color: #7000ff; }
         .time-adjust:disabled { visibility: hidden; }
 
-        .timer { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; color: var(--text-dim); transition: all 0.5s; opacity: 0.3; min-width: 80px; text-align: center; }
+        #btn-reset-icon { font-size: 1.2rem; display: none; }
+        #btn-reset-icon.active { display: flex; }
+
+        .timer { font-family: 'Quicksand', sans-serif; font-size: 2.4rem; font-weight: 500; color: var(--text-dim); transition: all 0.5s; opacity: 0.3; min-width: 120px; text-align: center; display: flex; align-items: center; justify-content: center; letter-spacing: 1px; }
         .timer.active { color: #7000ff; opacity: 1; }
         .timer.warning { color: #ff007f; }
 
-        #status { position: absolute; bottom: 8px; left: 0; width: 100%; text-align: center; font-family: 'Space Mono', monospace; font-size: 0.5rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); opacity: 0; transition: opacity 0.5s; }
-        #status.active { opacity: 0.8; }
+        #topic-text { 
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: 3rem; 
+            font-weight: 300; 
+            font-style: italic; 
+            line-height: 1.1; 
+            color: var(--text); 
+            transition: all 0.8s ease; 
+        }
 
-        #topic-text { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 300; font-style: italic; line-height: 1.1; color: var(--text); transition: all 0.8s ease; }
+        .bloom #topic-text {
+            text-shadow: 0 0 20px rgba(112, 0, 255, 0.3);
+        }
+
+        #win-message {
+            position: absolute;
+            top: 0; right: 260px;
+            height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            color: #7000ff;
+            opacity: 0;
+            transform: translateX(30px);
+            transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+            pointer-events: none;
+            white-space: nowrap;
+            text-shadow: 0 0 15px rgba(112, 0, 255, 0.2);
+        }
+
+        body.win-mode #win-message {
+            opacity: 1;
+            transform: translateX(0);
+        }
 
         .action-bar { position: absolute; bottom: 40px; right: 40px; display: flex; gap: 15px; }
-        .btn-editorial { font-family: 'Quicksand', sans-serif; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; padding: 14px 28px; background: #1a1a1a; color: #fff; border: 1.5px solid transparent; cursor: pointer; transition: all 0.3s; }
+        .btn-editorial { font-family: 'Quicksand', sans-serif; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; padding: 14px 0; background: #1a1a1a; color: #fff; border: 1.5px solid transparent; cursor: pointer; transition: all 0.3s; width: 200px; text-align: center; }
         .btn-editorial:hover { border-image: linear-gradient(90deg, #7000ff, #ff00ff, #00ffff) 1; box-shadow: 0 0 20px rgba(112, 0, 255, 0.3); }
         .btn-editorial:active { transform: scale(0.98); }
-        .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+        .btn-editorial:disabled { 
+            opacity: 0.15; 
+            cursor: not-allowed; 
+            filter: grayscale(1); 
+            border: 1px solid var(--border) !important;
+            background: transparent !important;
+            color: var(--text-dim) !important;
+            box-shadow: none !important;
+            pointer-events: none;
+        }
+        .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); width: 150px; }
         .btn-secondary:hover { border-image: var(--holo) 1; color: #7000ff; }
 
         /* Settings Toggle Header (Mobile only) */
@@ -269,10 +354,6 @@
             text-underline-offset: 4px;
         }
 
-        @media (min-width: 1200px) {
-            .choice-value span:last-child { font-size: 1.8rem; opacity: 0.3; }
-        }
-
         @media (max-width: 1000px) {
             body { flex-direction: column; }
             .mobile-header { display: flex; }
@@ -291,13 +372,27 @@
 
             .sidebar-nav { overflow-y: auto; flex: 1; }
 
-            main { padding: 100px 20px 60px 20px; }
-            .canvas { padding: 40px 25px 120px 25px; min-height: 400px; border: none; background: transparent; box-shadow: none; }
+            main { padding: 0 20px 60px 20px; }
+            .canvas { padding: 20px 25px 120px 25px; min-height: 400px; border: none; background: transparent; box-shadow: none; }
             #topic-text { font-size: 1.8rem; text-align: center; }
-            .bookmark-timer { position: relative; right: auto; top: auto; width: 100%; height: auto; border: none; margin-bottom: 50px; background: transparent; }
+            .bookmark-timer { position: relative; right: auto; top: auto; width: 100%; height: auto; border: none; margin-bottom: 60px; background: transparent; }
+            
+            #win-message {
+                position: relative;
+                right: auto;
+                top: auto;
+                height: auto;
+                width: 100%;
+                justify-content: center;
+                margin-bottom: 10px;
+                transform: translateY(-10px);
+            }
+            body.win-mode #win-message { transform: translateY(0); }
+
             .timer { font-size: 1.8rem; opacity: 1; color: #7000ff; }
-            .action-bar { width: 100%; bottom: 20px; right: 0; justify-content: center; flex-wrap: wrap; padding: 0 20px; position: relative; margin-top: 60px; }
-            .btn-editorial { padding: 12px 20px; font-size: 0.7rem; flex: 1; min-width: 120px; text-align: center; }
+            .action-bar { width: 100%; bottom: 20px; right: 0; display: flex; flex-direction: column; gap: 15px; padding: 0 20px; position: relative; margin-top: 100px; }
+            .btn-editorial { padding: 12px 20px; font-size: 0.7rem; width: 100%; text-align: center; }
+            .btn-secondary { width: 100%; }
             
             .overlay {
                 display: none;
@@ -309,10 +404,6 @@
             }
             .overlay.active { display: block; }
         }
-
-        /* Particles */
-        .crystal { position: fixed; width: 2px; height: 2px; background: #7000ff; pointer-events: none; z-index: 100; animation: fall 3s forwards; }
-        @keyframes fall { 0% { transform: translate(0,0); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)); opacity: 0; } }
     </style>
 </head>
 <body>
@@ -327,6 +418,8 @@
 <div class="overlay" id="sidebar-overlay"></div>
 
 <div class="holo-bg"></div>
+
+<div class="bloom-aura"></div>
 
 <aside id="main-sidebar">
     <a href="index.html" style="text-decoration: none;">
@@ -361,12 +454,12 @@
         <div class="filter-section">
             <div class="choice-trigger" id="goal-trigger">
                 <span class="choice-label">Training Goal</span>
-                <div class="choice-value"><span id="val-goal">All</span> <span>▾</span></div>
+                <div class="choice-value"><span id="val-goal">Fluency</span> <span>▾</span></div>
             </div>
             <div class="choice-menu" id="menu-goal">
                 <label class="choice-option active-text" data-tooltip="Speak without pauses or filler words like 'um' and 'ah'."><input type="checkbox" class="goal-check" value="fluency" checked> Fluency</label>
-                <label class="choice-option active-text" data-tooltip="Organize your thoughts into a clear Intro, Body, and Conclusion."><input type="checkbox" class="goal-check" value="structure" checked> Structure</label>
-                <label class="choice-option active-text" data-tooltip="Use persuasive language and vivid metaphors to win the room."><input type="checkbox" class="goal-check" value="rhetoric" checked> Rhetoric</label>
+                <label class="choice-option" data-tooltip="Organize your thoughts into a clear Intro, Body, and Conclusion."><input type="checkbox" class="goal-check" value="structure"> Structure</label>
+                <label class="choice-option" data-tooltip="Use persuasive language and vivid metaphors to win the room."><input type="checkbox" class="goal-check" value="rhetoric"> Rhetoric</label>
             </div>
         </div>
     </div>
@@ -376,11 +469,14 @@
 
 <main>
     <div class="canvas">
+        <div id="win-message">Aura Gained</div>
         <div class="bookmark-timer">
-            <button class="time-adjust" id="time-plus">+</button>
-            <div class="timer" id="timer-display">03:00</div>
+            <div style="position: relative; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
+                <button class="time-adjust" id="time-plus">+</button>
+                <button class="time-adjust" id="btn-reset-icon" title="Reset Timer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">↺</button>
+            </div>
+            <div class="timer" id="timer-display">01:00</div>
             <button class="time-adjust" id="time-minus">-</button>
-            <div id="status">Your turn</div>
         </div>
 
         <div class="topic-wrap">
@@ -389,8 +485,7 @@
 
         <div class="action-bar">
             <button id="btn-spin" class="btn-editorial btn-secondary">Get Topic</button>
-            <button id="btn-start" class="btn-editorial">Start Speaking</button>
-            <button id="btn-reset" class="btn-editorial btn-secondary">Reset</button>
+            <button id="btn-start" class="btn-editorial" disabled>Start Speaking</button>
         </div>
     </div>
 </main>
@@ -400,10 +495,11 @@
         let topics = {};
         $.getJSON('topics.json', function(data) { topics = data; });
 
-        let savedTime = parseInt(localStorage.getItem('speechSessionTimer')) || 180;
+        let savedTime = parseInt(localStorage.getItem('speechSessionTimer')) || 60;
         let timeLeft = savedTime;
         let timer = null;
         let isRunning = false;
+        let topicSelected = false;
 
         // Mobile Settings Toggle
         $('#toggle-settings, #sidebar-overlay').click(function() {
@@ -443,10 +539,38 @@
             else $('#timer-display').removeClass('warning');
         }
 
-        $('#time-plus').click(function() { timeLeft += 30; localStorage.setItem('speechSessionTimer', timeLeft); updateDisplay(); });
-        $('#time-minus').click(function() { if (timeLeft > 30) { timeLeft -= 30; localStorage.setItem('speechSessionTimer', timeLeft); updateDisplay(); } });
+        $('#time-plus').click(function() { 
+            timeLeft += 30; 
+            if (!topicSelected) localStorage.setItem('speechSessionTimer', timeLeft); 
+            updateDisplay(); 
+        });
+        $('#time-minus').click(function() { 
+            if (timeLeft > 30) { 
+                timeLeft -= 30; 
+                if (!topicSelected) localStorage.setItem('speechSessionTimer', timeLeft); 
+                updateDisplay(); 
+            } 
+        });
 
         $('#btn-spin').click(function() {
+            if (isRunning) {
+                $('#topic-text').css('color', '#ff007f');
+                setTimeout(() => { $('#topic-text').css('color', 'var(--text)'); }, 1500);
+                return;
+            }
+            
+            // Reset timer state
+            clearInterval(timer);
+            isRunning = false;
+            timeLeft = parseInt(localStorage.getItem('speechSessionTimer')) || 60;
+            updateDisplay();
+            $('#btn-start').text('Start Speaking').prop('disabled', false);
+            $('.time-adjust').prop('disabled', false);
+            $('#time-plus, #time-minus').show(); $('#btn-reset-icon').removeClass('active');
+            $('#timer-display').removeClass('active');
+            $('body').removeClass('win-mode');
+            $('.canvas').removeClass('bloom');
+
             const $text = $('#topic-text');
             const diffs = $('.diff-check:checked').map(function() { return this.value; }).get();
             const cats = $('.cat-check:checked').map(function() { return this.value; }).get();
@@ -454,40 +578,76 @@
             let pool = [];
             diffs.forEach(d => { if(topics[d]) pool = pool.concat(topics[d]); });
             let filteredTopics = pool.filter(t => cats.includes(t.category) && goals.includes(t.goal));
-            if (filteredTopics.length === 0) { $text.html("No matches."); return; }
+            if (filteredTopics.length === 0) { $text.html("No matches."); topicSelected = false; return; }
             const finalTopic = filteredTopics[Math.floor(Math.random() * filteredTopics.length)].text;
-            $text.css({opacity: 0, filter: 'blur(10px)'});
+            topicSelected = true;
+            $text.css({opacity: 0, filter: 'blur(10px)', color: 'var(--text)'});
             setTimeout(() => { $text.html(finalTopic).css({opacity: 1, filter: 'blur(0)'}); }, 400);
         });
 
         $('#btn-start').click(function() {
+            if (!topicSelected) {
+                $('#topic-text').css('color', '#ff007f');
+                setTimeout(() => { $('#topic-text').css('color', 'var(--text)'); }, 1500);
+                return;
+            }
             if (isRunning) {
-                clearInterval(timer); $(this).text('Resume'); $('#status').text('Paused'); $('.time-adjust').prop('disabled', false);
+                clearInterval(timer); $(this).text('Resume'); $('.time-adjust').prop('disabled', false);
+                $('#time-plus, #time-minus').show(); $('#btn-reset-icon').removeClass('active');
             } else {
-                $(this).text('Pause'); $('#status').text('Your turn').addClass('active'); $('#timer-display').addClass('active'); $('.time-adjust').prop('disabled', true);
+                $(this).text('Pause'); $('#timer-display').addClass('active'); $('.time-adjust').prop('disabled', true);
+                $('#time-plus, #time-minus').hide(); $('#btn-reset-icon').addClass('active').prop('disabled', false);
                 timer = setInterval(() => { if (timeLeft > 0) { timeLeft--; updateDisplay(); } else { clearInterval(timer); triggerWin(); } }, 1000);
             }
             isRunning = !isRunning;
         });
 
         function triggerWin() {
-            for(let i = 0; i < 40; i++) {
-                const c = $('<div class="crystal"></div>');
-                const tx = (Math.random() - 0.5) * 1000; const ty = (Math.random() - 0.5) * 1000;
-                c.css({ left: '50%', top: '50%', '--tx': `${tx}px`, '--ty': `${ty}px`, animationDelay: (Math.random() * 1) + 's' });
-                $('body').append(c);
-                setTimeout(() => c.remove(), 3000);
-            }
-            $('#status').text('Well Done!'); $('#btn-start').text('Start Speaking'); $('.time-adjust').prop('disabled', false); isRunning = false;
+            const phrases = [
+                "Aura +100",
+                "Maximum Aura Attained",
+                "Total Glow Up",
+                "Main Character Energy",
+                "Radiant Performance",
+                "Elegance Level Up",
+                "Front Page Worthy",
+                "Voice Refined",
+                "Cognitive Flow State",
+                "Absolute Clarity",
+                "Speech Polished",
+                "Neural Pathways Ignited",
+                "Iconic Energy"
+            ];
+            const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+            $('#win-message').text(randomPhrase);
+
+            $('body').addClass('win-mode');
+            $('.canvas').addClass('bloom');
+            
+            setTimeout(() => {
+                $('body').removeClass('win-mode');
+                $('.canvas').removeClass('bloom');
+            }, 5000);
+
+            $('#btn-start').text('Start Speaking').prop('disabled', true);
+            $('.time-adjust').prop('disabled', false); 
+            $('#time-plus, #time-minus').show(); $('#btn-reset-icon').removeClass('active');
+            isRunning = false;
+            topicSelected = false;
         }
 
-        $('#btn-reset').click(function() {
-            clearInterval(timer); isRunning = false;
-            timeLeft = parseInt(localStorage.getItem('speechSessionTimer')) || 180;
+        $('#btn-reset-icon').click(function() {
+            clearInterval(timer); 
+            isRunning = false;
+            // keep topicSelected = true
+            $('body').removeClass('win-mode');
+            $('.canvas').removeClass('bloom');
+            $('#btn-start').prop('disabled', false).text('Start Speaking');
+            timeLeft = parseInt(localStorage.getItem('speechSessionTimer')) || 60;
             updateDisplay();
-            $('#btn-start').text('Start Speaking'); $('.time-adjust').prop('disabled', false);
-            $('#status').removeClass('active'); $('#timer-display').removeClass('active');
-            $('#topic-text').html('Ready to talk? <br> Adjust settings in the column.');
+            $('.time-adjust').prop('disabled', false);
+            $('#time-plus, #time-minus').show(); $(this).removeClass('active');
+            $('#timer-display').removeClass('active');
         });
 
         updateDisplay();
