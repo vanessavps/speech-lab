@@ -21,6 +21,7 @@
             line-height: 1.6;
             background: #fff;
             min-height: 100vh;
+            display: flex;
         }
 
         .holo-bg {
@@ -30,10 +31,123 @@
             background: linear-gradient(135deg, #f8faff, #fffcfc, #fcfcfc);
         }
 
+        .holo-bg::after {
+            content: "";
+            position: absolute;
+            top: -20%; right: -20%; width: 60%; height: 60%;
+            background: radial-gradient(circle, rgba(112, 0, 255, 0.05) 0%, transparent 70%);
+            filter: blur(80px);
+        }
+
+        /* Desktop Sidebar */
+        aside {
+            width: 320px;
+            padding: 60px 40px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(23px);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            height: 100vh;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+        }
+
+        .logo-link {
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            font-style: italic;
+            font-weight: 300;
+            background: linear-gradient(90deg, #7000ff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Sidebar Table of Contents */
+        .toc-section {
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 10px;
+            padding-bottom: 20px;
+        }
+
+        .toc-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            display: block;
+            margin-bottom: 8px;
+            padding-top: 15px;
+        }
+
+        .toc-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-bottom: 15px;
+        }
+
+        .toc-link {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toc-link:hover {
+            color: #7000ff;
+            padding-left: 5px;
+        }
+
+        .toc-link span {
+            font-family: 'Quicksand', sans-serif;
+            font-style: normal;
+            font-size: 0.8rem;
+            opacity: 0.3;
+        }
+
+        .back-link {
+            margin-top: auto;
+            font-size: 0.7rem;
+            color: #7000ff;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            transition: color 0.3s, opacity 0.3s;
+            padding-bottom: 20px;
+            display: inline-block;
+        }
+
+        .back-link:hover { opacity: 0.7; }
+
+        /* Content Area */
+        main {
+            flex: 1;
+            overflow-y: auto;
+            min-width: 0;
+            scroll-behavior: smooth;
+        }
+
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 100px 40px;
+            max-width: 900px;
+            padding: 100px 80px;
         }
 
         header {
@@ -69,6 +183,7 @@
 
         .method-section {
             margin-bottom: 100px;
+            scroll-margin-top: 60px;
         }
 
         h2 {
@@ -132,100 +247,197 @@
             font-size: 1.1rem;
         }
 
-        @media (max-width: 700px) {
+        /* Settings Toggle Header (Mobile only) */
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 500;
+            padding: 0 25px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .settings-toggle {
+            font-size: 0.7rem;
+            color: #7000ff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        @media (max-width: 1000px) {
+            body { flex-direction: column; }
+            .mobile-header { display: flex; }
+            
+            aside {
+                position: fixed;
+                top: 0; left: 0;
+                width: 300px;
+                height: 100vh;
+                transform: translateX(-100%);
+                transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+                box-shadow: 30px 0 60px rgba(0,0,0,0.1);
+                z-index: 2000;
+            }
+            aside.open { transform: translateX(0); }
+
+            .toc-section { overflow-y: auto; flex: 1; }
+
+            .container { padding: 100px 25px 60px 25px; }
             h1 { font-size: 3rem; }
-            .card-grid { grid-template-columns: 1fr; }
-            .container { padding: 60px 25px; }
+            .card-grid { grid-template-columns: 1fr; gap: 40px; }
+
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.2);
+                backdrop-filter: blur(4px);
+                z-index: 1500;
+            }
+            .overlay.active { display: block; }
         }
     </style>
 </head>
 <body>
 
-<div class="holo-bg"></div>
-
-<div class="container">
-    <header>
-        <span class="category-label">Training Handbook</span>
-        <h1>Methods of Speech</h1>
-        <p class="intro">A collection of professional frameworks to help you master the art of impromptu speaking.</p>
-    </header>
-
-    <section class="method-section">
-        <h2>Fluency Lab</h2>
-        <p>The foundation of confidence. Focus on rhythm, breath, and the elimination of "verbal static."</p>
-        
-        <div class="card-grid">
-            <div class="method-card">
-                <h3>The Power Pause</h3>
-                <p>When you lose your train of thought, resist the urge to fill the gap with 'um' or 'ah'. A 2-second silence sounds like authority to the listener.</p>
-            </div>
-            <div class="method-card">
-                <h3>Low-Center Breathing</h3>
-                <p>Nervousness pushes breath to the chest. Consciously breathe into your stomach to stabilize your vocal tone and slow your heart rate.</p>
-            </div>
-            <div class="method-card">
-                <h3>Vocal Variety</h3>
-                <p>Avoid the 'Monotone Trap'. Practice shifting your pitch and volume to highlight key words, keeping the audience engaged.</p>
-            </div>
-            <div class="method-card">
-                <h3>Eye Contact Hold</h3>
-                <p>Complete a full thought or sentence while looking at one person before moving to the next. It prevents 'darting eyes' and creates connection.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="method-section">
-        <h2>Structure Lab</h2>
-        <p>The architecture of a message. Give your audience a logical path to follow from start to finish.</p>
-        
-        <div class="card-grid">
-            <div class="method-card">
-                <h3>The PREP Method</h3>
-                <p>Point: State your main idea clearly.<br>Reason: Explain why it matters.<br>Example: Provide evidence or a story.<br>Point: Restate the idea to close.</p>
-            </div>
-            <div class="method-card">
-                <h3>Past-Present-Future</h3>
-                <p>A universal timeline. Describe how things used to be, how they look right now, and what the vision is for the future.</p>
-            </div>
-            <div class="method-card">
-                <h3>The Rule of Three</h3>
-                <p>The human brain loves patterns. Grouping your supporting points into three makes your speech inherently more memorable.</p>
-            </div>
-            <div class="method-card">
-                <h3>Problem-Solution</h3>
-                <p>Define a friction point clearly, describe the stakes of ignoring it, and then present your solution as the logical path forward.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="method-section">
-        <h2>Rhetoric Lab</h2>
-        <p>The art of influence. Move beyond information and start moving people's emotions and perspectives.</p>
-        
-        <div class="card-grid">
-            <div class="method-card">
-                <h3>The Three Pillars</h3>
-                <p>Ethos: Establish your credibility.<br>Pathos: Connect with the audience's heart.<br>Logos: Support your claims with clear logic.</p>
-            </div>
-            <div class="method-card">
-                <h3>Vivid Metaphor</h3>
-                <p>Explain complex or abstract ideas by comparing them to physical objects. It turns your speech into a mental image for the listener.</p>
-            </div>
-            <div class="method-card">
-                <h3>Anaphora</h3>
-                <p>Repeat a key phrase at the beginning of successive sentences. It builds a rhythmic momentum that feels inevitable and powerful.</p>
-            </div>
-            <div class="method-card">
-                <h3>The Call to Action</h3>
-                <p>Never end a speech without a clear 'next step'. Tell your audience exactly what you want them to do, think, or feel next.</p>
-            </div>
-        </div>
-    </section>
-
-    <footer class="footer-note">
-        "Speech is power: speech is to persuade, to convert, to compel." — Ralph Waldo Emerson
-    </footer>
+<div class="mobile-header">
+    <a href="index.html" style="text-decoration: none;">
+        <div class="logo" style="margin-bottom: 0; font-size: 1.4rem;">SpeechLab.</div>
+    </a>
+    <div class="settings-toggle" id="toggle-settings">Index</div>
 </div>
 
+<div class="overlay" id="sidebar-overlay"></div>
+
+<div class="holo-bg"></div>
+
+<aside id="main-sidebar">
+    <a href="index.html" class="logo-link">
+        <div class="logo">SpeechLab.</div>
+    </a>
+
+    <nav class="toc-section">
+        <span class="toc-label">Handbook Index</span>
+        <div class="toc-list">
+            <a href="#fluency" class="toc-link">Fluency Lab <span>›</span></a>
+            <a href="#structure" class="toc-link">Structure Lab <span>›</span></a>
+            <a href="#rhetoric" class="toc-link">Rhetoric Lab <span>›</span></a>
+        </div>
+    </nav>
+
+    <a href="index.html" class="back-link">Back to practice</a>
+</aside>
+
+<main>
+    <div class="container">
+        <header>
+            <span class="category-label">Professional Training</span>
+            <h1>Methods of Speech</h1>
+            <p class="intro">Master the frameworks of impromptu excellence.</p>
+        </header>
+
+        <section class="method-section" id="fluency">
+            <h2>Fluency Lab</h2>
+            <p>The foundation of confidence. Focus on rhythm, breath, and the elimination of "verbal static."</p>
+            
+            <div class="card-grid">
+                <div class="method-card">
+                    <h3>The Power Pause</h3>
+                    <p>When you lose your train of thought, resist the urge to fill the gap with 'um' or 'ah'. A 2-second silence sounds like authority to the listener.</p>
+                </div>
+                <div class="method-card">
+                    <h3>Low-Center Breathing</h3>
+                    <p>Nervousness pushes breath to the chest. Consciously breathe into your stomach to stabilize your vocal tone and slow your heart rate.</p>
+                </div>
+                <div class="method-card">
+                    <h3>Vocal Variety</h3>
+                    <p>Avoid the 'Monotone Trap'. Practice shifting your pitch and volume to highlight key words, keeping the audience engaged.</p>
+                </div>
+                <div class="method-card">
+                    <h3>Eye Contact Hold</h3>
+                    <p>Complete a full thought or sentence while looking at one person before moving to the next. It prevents 'darting eyes' and creates connection.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="method-section" id="structure">
+            <h2>Structure Lab</h2>
+            <p>The architecture of a message. Give your audience a logical path to follow from start to finish.</p>
+            
+            <div class="card-grid">
+                <div class="method-card">
+                    <h3>The PREP Method</h3>
+                    <p>Point: State your main idea clearly.<br>Reason: Explain why it matters.<br>Example: Provide evidence or a story.<br>Point: Restate the idea to close.</p>
+                </div>
+                <div class="method-card">
+                    <h3>Past-Present-Future</h3>
+                    <p>A universal timeline. Describe how things used to be, how they look right now, and what the vision is for the future.</p>
+                </div>
+                <div class="method-card">
+                    <h3>The Rule of Three</h3>
+                    <p>The human brain loves patterns. Grouping your supporting points into three makes your speech inherently more memorable.</p>
+                </div>
+                <div class="method-card">
+                    <h3>Problem-Solution</h3>
+                    <p>Define a friction point clearly, describe the stakes of ignoring it, and then present your solution as the logical path forward.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="method-section" id="rhetoric">
+            <h2>Rhetoric Lab</h2>
+            <p>The art of influence. Move beyond information and start moving people's emotions and perspectives.</p>
+            
+            <div class="card-grid">
+                <div class="method-card">
+                    <h3>The Three Pillars</h3>
+                    <p>Ethos: Establish your credibility.<br>Pathos: Connect with the audience's heart.<br>Logos: Support your claims with clear logic.</p>
+                </div>
+                <div class="method-card">
+                    <h3>Vivid Metaphor</h3>
+                    <p>Explain complex or abstract ideas by comparing them to physical objects. It turns your speech into a mental image for the listener.</p>
+                </div>
+                <div class="method-card">
+                    <h3>Anaphora</h3>
+                    <p>Repeat a key phrase at the beginning of successive sentences. It builds a rhythmic momentum that feels inevitable and powerful.</p>
+                </div>
+                <div class="method-card">
+                    <h3>The Call to Action</h3>
+                    <p>Never end a speech without a clear 'next step'. Tell your audience exactly what you want them to do, think, or feel next.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer-note">
+            "Speech is power: speech is to persuade, to convert, to compel." — Ralph Waldo Emerson
+        </footer>
+    </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Mobile Settings Toggle
+        $('#toggle-settings, #sidebar-overlay').click(function() {
+            $('#main-sidebar').toggleClass('open');
+            $('#sidebar-overlay').toggleClass('active');
+        });
+
+        // Close sidebar on link click
+        $('.toc-link, .back-link').click(function() {
+            $('#main-sidebar').removeClass('open');
+            $('#sidebar-overlay').removeClass('active');
+        });
+    });
+</script>
 </body>
 </html>

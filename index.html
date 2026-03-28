@@ -32,18 +32,20 @@
             background: linear-gradient(135deg, #f8faff, #fffcfc, #fcfcfc);
         }
 
-        /* Sidebar */
+        /* Desktop Sidebar */
         aside {
             width: 320px;
             padding: 60px 40px;
             background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(23px);
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            z-index: 100;
+            z-index: 1000;
             height: 100vh;
             flex-shrink: 0;
+            position: sticky;
+            top: 0;
         }
 
         .logo {
@@ -161,18 +163,18 @@
         .resources-link {
             margin-top: auto;
             font-size: 0.7rem;
-            color: var(--text-dim);
+            color: #7000ff;
             cursor: pointer;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 2px;
             text-decoration: underline;
             text-underline-offset: 4px;
-            transition: color 0.3s;
+            transition: color 0.3s, opacity 0.3s;
             padding-bottom: 20px;
             display: inline-block;
         }
-        .resources-link:hover { color: #7000ff; }
+        .resources-link:hover { opacity: 0.7; }
 
         /* Main Workspace */
         main {
@@ -236,31 +238,76 @@
 
         .action-bar { position: absolute; bottom: 40px; right: 40px; display: flex; gap: 15px; }
         .btn-editorial { font-family: 'Quicksand', sans-serif; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; padding: 14px 28px; background: #1a1a1a; color: #fff; border: 1.5px solid transparent; cursor: pointer; transition: all 0.3s; }
-        .btn-editorial:hover { border-image: linear-gradient(90deg, #7000ff, #ff00ff, #00ffff) 1; box-shadow: 0 0 20px rgba(112, 0, 255, 0.3); filter: brightness(1.2); }
+        .btn-editorial:hover { border-image: linear-gradient(90deg, #7000ff, #ff00ff, #00ffff) 1; box-shadow: 0 0 20px rgba(112, 0, 255, 0.3); }
+        .btn-editorial:active { transform: scale(0.98); }
         .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
-        .btn-secondary:hover { background: #fff; border-image: var(--holo) 1; color: #7000ff; }
+        .btn-secondary:hover { border-image: var(--holo) 1; color: #7000ff; }
+
+        /* Settings Toggle Header (Mobile only) */
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 500;
+            padding: 0 25px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .settings-toggle {
+            font-size: 0.7rem;
+            color: #7000ff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
 
         @media (min-width: 1200px) {
             .choice-value span:last-child { font-size: 1.8rem; opacity: 0.3; }
         }
 
         @media (max-width: 1000px) {
-            body { flex-direction: column; overflow-y: auto; overflow-x: hidden; }
-            aside { width: 100%; height: auto; padding: 30px 20px; border-right: none; border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); }
-            .logo { margin-bottom: 20px; font-size: 1.8rem; text-align: center; }
-            .filter-section { border-bottom: none; border: 1px solid var(--border); border-radius: 4px; margin-bottom: 5px; }
-            .choice-trigger { padding: 10px 15px; }
-            .choice-label { display: none; }
-            .choice-value { font-size: 0.8rem; gap: 5px; }
-            .choice-menu.open { max-height: 200px; padding: 0 15px 15px 15px; }
-            main { padding: 20px; }
-            .canvas { padding: 40px 25px 120px 25px; min-height: 400px; }
+            body { flex-direction: column; }
+            .mobile-header { display: flex; }
+            
+            aside {
+                position: fixed;
+                top: 0; left: 0;
+                width: 300px;
+                height: 100vh;
+                transform: translateX(-100%);
+                transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+                box-shadow: 30px 0 60px rgba(0,0,0,0.1);
+                z-index: 2000;
+            }
+            aside.open { transform: translateX(0); }
+
+            .sidebar-nav { overflow-y: auto; flex: 1; }
+
+            main { padding: 100px 20px 60px 20px; }
+            .canvas { padding: 40px 25px 120px 25px; min-height: 400px; border: none; background: transparent; box-shadow: none; }
             #topic-text { font-size: 1.8rem; text-align: center; }
-            .bookmark-timer { position: relative; right: auto; top: auto; width: 100%; height: auto; border: none; margin-bottom: 30px; background: transparent; }
+            .bookmark-timer { position: relative; right: auto; top: auto; width: 100%; height: auto; border: none; margin-bottom: 50px; background: transparent; }
             .timer { font-size: 1.8rem; opacity: 1; color: #7000ff; }
-            .action-bar { width: 100%; bottom: 20px; right: 0; justify-content: center; flex-wrap: wrap; padding: 0 20px; }
+            .action-bar { width: 100%; bottom: 20px; right: 0; justify-content: center; flex-wrap: wrap; padding: 0 20px; position: relative; margin-top: 60px; }
             .btn-editorial { padding: 12px 20px; font-size: 0.7rem; flex: 1; min-width: 120px; text-align: center; }
-            .resources-link { position: relative; left: auto; bottom: auto; text-align: center; padding: 20px 0; border-top: 1px solid var(--border); margin-top: 20px; }
+            
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.2);
+                backdrop-filter: blur(4px);
+                z-index: 1500;
+            }
+            .overlay.active { display: block; }
         }
 
         /* Particles */
@@ -270,10 +317,21 @@
 </head>
 <body>
 
+<div class="mobile-header">
+    <a href="index.html" style="text-decoration: none;">
+        <div class="logo" style="margin-bottom: 0; font-size: 1.4rem;">SpeechLab.</div>
+    </a>
+    <div class="settings-toggle" id="toggle-settings">Settings</div>
+</div>
+
+<div class="overlay" id="sidebar-overlay"></div>
+
 <div class="holo-bg"></div>
 
-<aside>
-    <div class="logo">SpeechLab.</div>
+<aside id="main-sidebar">
+    <a href="index.html" style="text-decoration: none;">
+        <div class="logo">SpeechLab.</div>
+    </a>
     
     <div class="sidebar-nav">
         <div class="filter-section">
@@ -320,7 +378,7 @@
     <div class="canvas">
         <div class="bookmark-timer">
             <button class="time-adjust" id="time-plus">+</button>
-            <div class="timer" id="timer-display">00:03</div>
+            <div class="timer" id="timer-display">03:00</div>
             <button class="time-adjust" id="time-minus">-</button>
             <div id="status">Your turn</div>
         </div>
@@ -342,10 +400,22 @@
         let topics = {};
         $.getJSON('topics.json', function(data) { topics = data; });
 
-        let savedTime = parseInt(localStorage.getItem('speechSessionTimer')) || 3;
+        let savedTime = parseInt(localStorage.getItem('speechSessionTimer')) || 180;
         let timeLeft = savedTime;
         let timer = null;
         let isRunning = false;
+
+        // Mobile Settings Toggle
+        $('#toggle-settings, #sidebar-overlay').click(function() {
+            $('#main-sidebar').toggleClass('open');
+            $('#sidebar-overlay').toggleClass('active');
+        });
+
+        // Close sidebar on navigation (mobile)
+        $('.resources-link').click(function() {
+            $('#main-sidebar').removeClass('open');
+            $('#sidebar-overlay').removeClass('active');
+        });
 
         // Accordion Logic
         $('.choice-trigger').click(function() {
@@ -413,7 +483,7 @@
 
         $('#btn-reset').click(function() {
             clearInterval(timer); isRunning = false;
-            timeLeft = parseInt(localStorage.getItem('speechSessionTimer')) || 3;
+            timeLeft = parseInt(localStorage.getItem('speechSessionTimer')) || 180;
             updateDisplay();
             $('#btn-start').text('Start Speaking'); $('.time-adjust').prop('disabled', false);
             $('#status').removeClass('active'); $('#timer-display').removeClass('active');
