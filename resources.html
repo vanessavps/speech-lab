@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeechLab | Resources & Methods</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Quicksand:wght@300;500;600&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --text: #1a1a1a;
+            --text-dim: #888;
+            --holo: linear-gradient(90deg, #7000ff, #ff00ff, #00ffff);
+            --border: rgba(0, 0, 0, 0.05);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+            background: #fff;
+            min-height: 100vh;
+        }
+
+        .holo-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #f8faff, #fffcfc, #fcfcfc);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 100px 40px;
+        }
+
+        header {
+            margin-bottom: 80px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 40px;
+        }
+
+        .category-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #7000ff;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 4rem;
+            font-weight: 300;
+            font-style: italic;
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+
+        .intro {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            font-weight: 300;
+        }
+
+        .method-section {
+            margin-bottom: 100px;
+        }
+
+        h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        h2::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--holo);
+            opacity: 0.2;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .method-card {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 30px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .method-card:hover {
+            border-color: #7000ff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        }
+
+        .method-card h3 {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            color: #1a1a1a;
+        }
+
+        .method-card p {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .footer-note {
+            margin-top: 100px;
+            text-align: center;
+            font-style: italic;
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 700px) {
+            h1 { font-size: 3rem; }
+            .card-grid { grid-template-columns: 1fr; }
+            .container { padding: 60px 25px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="holo-bg"></div>
+
+<div class="container">
+    <header>
+        <span class="category-label">Training Handbook</span>
+        <h1>Methods of Speech</h1>
+        <p class="intro">A collection of professional frameworks to help you master the art of impromptu speaking.</p>
+    </header>
+
+    <section class="method-section">
+        <h2>Fluency Lab</h2>
+        <p>The foundation of confidence. Focus on rhythm, breath, and the elimination of "verbal static."</p>
+        
+        <div class="card-grid">
+            <div class="method-card">
+                <h3>The Power Pause</h3>
+                <p>When you lose your train of thought, resist the urge to fill the gap with 'um' or 'ah'. A 2-second silence sounds like authority to the listener.</p>
+            </div>
+            <div class="method-card">
+                <h3>Low-Center Breathing</h3>
+                <p>Nervousness pushes breath to the chest. Consciously breathe into your stomach to stabilize your vocal tone and slow your heart rate.</p>
+            </div>
+            <div class="method-card">
+                <h3>Vocal Variety</h3>
+                <p>Avoid the 'Monotone Trap'. Practice shifting your pitch and volume to highlight key words, keeping the audience engaged.</p>
+            </div>
+            <div class="method-card">
+                <h3>Eye Contact Hold</h3>
+                <p>Complete a full thought or sentence while looking at one person before moving to the next. It prevents 'darting eyes' and creates connection.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="method-section">
+        <h2>Structure Lab</h2>
+        <p>The architecture of a message. Give your audience a logical path to follow from start to finish.</p>
+        
+        <div class="card-grid">
+            <div class="method-card">
+                <h3>The PREP Method</h3>
+                <p>Point: State your main idea clearly.<br>Reason: Explain why it matters.<br>Example: Provide evidence or a story.<br>Point: Restate the idea to close.</p>
+            </div>
+            <div class="method-card">
+                <h3>Past-Present-Future</h3>
+                <p>A universal timeline. Describe how things used to be, how they look right now, and what the vision is for the future.</p>
+            </div>
+            <div class="method-card">
+                <h3>The Rule of Three</h3>
+                <p>The human brain loves patterns. Grouping your supporting points into three makes your speech inherently more memorable.</p>
+            </div>
+            <div class="method-card">
+                <h3>Problem-Solution</h3>
+                <p>Define a friction point clearly, describe the stakes of ignoring it, and then present your solution as the logical path forward.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="method-section">
+        <h2>Rhetoric Lab</h2>
+        <p>The art of influence. Move beyond information and start moving people's emotions and perspectives.</p>
+        
+        <div class="card-grid">
+            <div class="method-card">
+                <h3>The Three Pillars</h3>
+                <p>Ethos: Establish your credibility.<br>Pathos: Connect with the audience's heart.<br>Logos: Support your claims with clear logic.</p>
+            </div>
+            <div class="method-card">
+                <h3>Vivid Metaphor</h3>
+                <p>Explain complex or abstract ideas by comparing them to physical objects. It turns your speech into a mental image for the listener.</p>
+            </div>
+            <div class="method-card">
+                <h3>Anaphora</h3>
+                <p>Repeat a key phrase at the beginning of successive sentences. It builds a rhythmic momentum that feels inevitable and powerful.</p>
+            </div>
+            <div class="method-card">
+                <h3>The Call to Action</h3>
+                <p>Never end a speech without a clear 'next step'. Tell your audience exactly what you want them to do, think, or feel next.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer-note">
+        "Speech is power: speech is to persuade, to convert, to compel." — Ralph Waldo Emerson
+    </footer>
+</div>
+
+</body>
+</html>
