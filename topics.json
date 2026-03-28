@@ -1,0 +1,49 @@
+{
+  "easy": [
+    { "text": "Describe the most beautiful gift you've ever received.", "category": "general", "goal": "fluency" },
+    { "text": "What is your favorite morning ritual?", "category": "general", "goal": "fluency" },
+    { "text": "Describe the texture and scent of a fresh orange.", "category": "general", "goal": "fluency" },
+    { "text": "If you could only eat one meal for the rest of your life, what would it be?", "category": "general", "goal": "structure" },
+    { "text": "Explain why 'Early to bed, early to rise' is (or isn't) good advice.", "category": "general", "goal": "structure" },
+    { "text": "Convince us that your favorite season is the best one.", "category": "general", "goal": "rhetoric" },
+    { "text": "Tell us about your first ever mobile phone.", "category": "tech", "goal": "fluency" },
+    { "text": "Describe your favorite app without naming it.", "category": "tech", "goal": "fluency" },
+    { "text": "Which is better for reading: a physical book or an e-reader?", "category": "tech", "goal": "structure" },
+    { "text": "Explain why everyone should know how to use a keyboard properly.", "category": "tech", "goal": "rhetoric" },
+    { "text": "Describe your ideal workspace.", "category": "corporate", "goal": "fluency" },
+    { "text": "Tell us about a time you felt proud of a piece of work.", "category": "corporate", "goal": "fluency" },
+    { "text": "Explain the importance of taking short breaks during the day.", "category": "corporate", "goal": "structure" },
+    { "text": "Convince a manager that a 'Coffee Monday' would improve morale.", "category": "corporate", "goal": "rhetoric" }
+  ],
+  "medium": [
+    { "text": "Describe a dream you had that felt incredibly real.", "category": "general", "goal": "fluency" },
+    { "text": "What does 'home' mean to you beyond a physical building?", "category": "general", "goal": "fluency" },
+    { "text": "Is it better to be a generalist who knows a little about everything, or a specialist?", "category": "general", "goal": "structure" },
+    { "text": "Analyze the pros and cons of living in a big city vs. a small town.", "category": "general", "goal": "structure" },
+    { "text": "Explain the concept of 'Grief' using the metaphor of the ocean.", "category": "general", "goal": "rhetoric" },
+    { "text": "If you could capture a rainbow in a jar, what would you do with it?", "category": "general", "goal": "rhetoric" },
+    { "text": "Describe the 'Internet' to someone from the year 1800.", "category": "tech", "goal": "fluency" },
+    { "text": "How has the way we listen to music changed in the last 20 years?", "category": "tech", "goal": "structure" },
+    { "text": "Discuss the impact of social media on human friendship.", "category": "tech", "goal": "structure" },
+    { "text": "Persuade an audience to spend one full day a week without any screens.", "category": "tech", "goal": "rhetoric" },
+    { "text": "You are giving a toast at a retirement party for a beloved colleague.", "category": "corporate", "goal": "fluency" },
+    { "text": "How should a leader handle a visible mistake they made?", "category": "corporate", "goal": "structure" },
+    { "text": "Outline a plan to reduce unnecessary meetings in your office.", "category": "corporate", "goal": "structure" },
+    { "text": "Pitch a new 'Flexible Hours' policy to a very traditional CEO.", "category": "corporate", "goal": "rhetoric" }
+  ],
+  "hard": [
+    { "text": "Describe a complex emotion (like nostalgia) without ever using the word itself.", "category": "general", "goal": "fluency" },
+    { "text": "Explain the 'Butterfly Effect' and its philosophical implications on free will.", "category": "general", "goal": "structure" },
+    { "text": "Is privacy a fundamental human right or a luxury of the past?", "category": "general", "goal": "structure" },
+    { "text": "Defend the idea that shadows are actually the most vibrant part of a room.", "category": "general", "goal": "rhetoric" },
+    { "text": "Convince an audience of aliens that humanity is worth saving.", "category": "general", "goal": "rhetoric" },
+    { "text": "Explain the concept of 'Artificial Intelligence' using only kitchen metaphors.", "category": "tech", "goal": "rhetoric" },
+    { "text": "Defend the theory that we are becoming too dependent on our devices.", "category": "tech", "goal": "rhetoric" },
+    { "text": "Discuss the ethical implications of self-driving cars making 'life or death' choices.", "category": "tech", "goal": "structure" },
+    { "text": "Will physical hardware ever become completely obsolete?", "category": "tech", "goal": "structure" },
+    { "text": "Deliver bad news about a major project delay to a high-stakes client.", "category": "corporate", "goal": "rhetoric" },
+    { "text": "Persuade a board of directors to pivot the company into an entirely new industry.", "category": "corporate", "goal": "rhetoric" },
+    { "text": "How will corporate culture evolve in a world where offices no longer exist?", "category": "corporate", "goal": "structure" },
+    { "text": "Explain the long-term vision of a sustainable business to a skeptical investor.", "category": "corporate", "goal": "structure" }
+  ]
+}

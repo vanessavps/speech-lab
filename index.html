@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeechLab | Holographic Silk</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --text: #1a1a1a;
+            --text-dim: #666;
+            --glass: rgba(255, 255, 255, 0.5);
+            --prism: linear-gradient(120deg, #f0f4ff, #fff5f5, #f5fff5);
+            --active-glow: rgba(255, 0, 255, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        /* Optimized Holographic Background */
+        .holo-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #f0f4ff, #fff5f5, #f5fff5);
+            opacity: 0.5;
+        }
+
+        .holo-bg::after {
+            content: "";
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle at center, #ff00ff 0%, #00ffff 30%, transparent 70%);
+            opacity: 0.08;
+        }
+
+        /* Sidebar Structure */
+        aside {
+            width: 300px;
+            padding: 60px 40px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            height: 100vh;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            font-style: italic;
+            font-weight: 300;
+            background: linear-gradient(90deg, #7000ff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Compact Pill Filters */
+        .nav-section {
+            margin-top: 40px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .diff-btn {
+            padding: 6px 16px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.5);
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-dim);
+            cursor: pointer;
+            border-radius: 100px;
+            transition: all 0.3s ease;
+        }
+
+        .diff-btn:hover {
+            border-color: rgba(112, 0, 255, 0.2);
+            color: var(--text);
+        }
+
+        .diff-btn.active {
+            background: linear-gradient(#fff, #fff) padding-box, 
+                        linear-gradient(90deg, #7000ff, #ff00ff, #00ffff) border-box;
+            border: 1px solid transparent;
+            color: #7000ff;
+            box-shadow: 0 4px 15px rgba(112, 0, 255, 0.1);
+        }
+
+        /* Tooltip Styles */
+        .diff-btn[data-tooltip] {
+            position: relative;
+        }
+
+        .diff-btn[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 0;
+            transform: translateY(10px);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            color: var(--text);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            width: 200px;
+            text-align: left;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid rgba(112, 0, 255, 0.1);
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+            z-index: 100;
+            line-height: 1.4;
+        }
+
+        .diff-btn[data-tooltip]:hover::after {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Resources Drawer */
+        .drawer {
+            position: fixed;
+            top: 0; right: -100%;
+            width: 400px; height: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            box-shadow: -20px 0 50px rgba(0,0,0,0.05);
+            transition: right 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            padding: 60px 40px;
+            overflow-y: auto;
+            border-left: 1px solid rgba(112, 0, 255, 0.1);
+        }
+
+        .drawer.open {
+            right: 0;
+        }
+
+        .drawer-close {
+            position: absolute;
+            top: 30px; right: 30px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-dim);
+        }
+
+        .resource-section {
+            margin-bottom: 40px;
+        }
+
+        .resource-section h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-style: italic;
+            color: #7000ff;
+            margin-bottom: 15px;
+        }
+
+        .resource-section p {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .tip-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tip-list li {
+            font-size: 0.8rem;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+            color: var(--text-dim);
+            display: flex;
+            gap: 10px;
+        }
+
+        .tip-list li::before {
+            content: "✦";
+            color: #ff00ff;
+        }
+
+        .speaker-tips-link {
+            margin-top: auto;
+            font-size: 0.75rem;
+            color: #7000ff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            padding-bottom: 20px;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.1);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .overlay.visible {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Main Stage */
+        main {
+            flex: 1;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 5;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 2px;
+            padding: 80px 60px;
+            width: 100%;
+            max-width: 800px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.03);
+            overflow: hidden;
+            will-change: transform;
+        }
+
+        /* Static Prism Border */
+        .glass-panel::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 5%; width: 90%; height: 1px;
+            background: linear-gradient(90deg, transparent, #7000ff, #00ffff, transparent);
+        }
+
+        #topic-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.8rem;
+            font-weight: 300;
+            font-style: italic;
+            text-align: center;
+            line-height: 1.2;
+            color: var(--text);
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.8s ease;
+        }
+
+        /* Refined Timer */
+        .timer-container {
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .timer {
+            font-size: 5rem;
+            font-weight: 300;
+            letter-spacing: 10px;
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        .timer.warning {
+            color: #ff007f;
+        }
+
+        #status {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-dim);
+            margin-top: 10px;
+            opacity: 0.8;
+        }
+
+        /* Floating Crystal Controls */
+        .controls {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .btn-prism {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            padding: 15px 35px;
+            background: #fff;
+            border: 1.5px solid rgba(0, 0, 0, 0.08);
+            border-radius: 0;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .btn-prism:hover {
+            border-image: linear-gradient(90deg, #7000ff, #ff00ff, #00ffff) 1;
+            box-shadow: 0 10px 30px rgba(112, 0, 255, 0.1);
+            color: #7000ff;
+        }
+
+        /* Floating Crystal reward */
+        .crystal {
+            position: fixed;
+            width: 10px; height: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            pointer-events: none;
+            z-index: 100;
+            animation: crystalFall 3s ease-out forwards;
+        }
+
+        @keyframes crystalFall {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) rotate(360deg); opacity: 0; }
+        }
+
+        @media (max-width: 800px) {
+            body { flex-direction: column; overflow: auto; }
+            aside { width: 100%; height: auto; padding: 40px; border-right: none; border-bottom: 1px solid rgba(0,0,0,0.05); }
+            main { padding: 40px; }
+            .timer { font-size: 3rem; }
+            .topic-text { font-size: 1.8rem; }
+            .speaker-tips-link { margin-top: 40px; }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="holo-bg"></div>
+
+<aside>
+    <div>
+        <div class="logo">SpeechLab.</div>
+        <div class="nav-section">
+            <span class="nav-label">Difficulty</span>
+            <div class="filter-group">
+                <button class="diff-btn active" data-type="difficulty" data-value="easy">Easy</button>
+                <button class="diff-btn" data-type="difficulty" data-value="medium">Medium</button>
+                <button class="diff-btn" data-type="difficulty" data-value="hard">Hard</button>
+            </div>
+        </div>
+
+        <div class="nav-section" style="margin-top: 40px;">
+            <span class="nav-label">Category</span>
+            <div class="filter-group">
+                <button class="diff-btn active" data-type="category" data-value="all">All</button>
+                <button class="diff-btn" data-type="category" data-value="general">General</button>
+                <button class="diff-btn" data-type="category" data-value="tech">Tech</button>
+                <button class="diff-btn" data-type="category" data-value="corporate">Corporate</button>
+            </div>
+        </div>
+
+        <div class="nav-section" style="margin-top: 40px;">
+            <span class="nav-label">Training Goal</span>
+            <div class="filter-group">
+                <button class="diff-btn active" data-type="goal" data-value="all">All</button>
+                <button class="diff-btn" data-type="goal" data-value="fluency" data-tooltip="Speak without pauses or filler words like 'um' and 'ah'.">Fluency</button>
+                <button class="diff-btn" data-type="goal" data-value="structure" data-tooltip="Organize your thoughts into a clear Intro, Body, and Conclusion.">Structure</button>
+                <button class="diff-btn" data-type="goal" data-value="rhetoric" data-tooltip="Use persuasive language and vivid metaphors to win the room.">Rhetoric</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="speaker-tips-link" id="open-tips">
+        <span>Speaker Tips & Methods</span>
+    </div>
+</aside>
+
+<div class="overlay" id="overlay"></div>
+<div class="drawer" id="drawer">
+    <div class="drawer-close" id="close-tips">×</div>
+    <div class="resource-section">
+        <h3>Fluency Lab</h3>
+        <p>Goal: Speak without filler words (um, ah, so, like) or awkward silences.</p>
+        <ul class="tip-list">
+            <li><strong>Embrace the Pause:</strong> When you're stuck, just stop. Silence is more powerful than an 'um'.</li>
+            <li><strong>Breathe Low:</strong> Deep breathing prevents the 'choppy' rhythm associated with nervousness.</li>
+            <li><strong>Slow Down:</strong> Nervous speakers talk fast. Consciously reduce your speed by 20%.</li>
+        </ul>
+    </div>
+
+    <div class="resource-section">
+        <h3>Structure Lab</h3>
+        <p>Goal: Organize your thoughts into a coherent sequence that is easy to follow.</p>
+        <ul class="tip-list">
+            <li><strong>The PREP Method:</strong> Point (make it), Reason (explain it), Example (prove it), Point (reiterate it).</li>
+            <li><strong>Past-Present-Future:</strong> Talk about how it was, how it is now, and where it's going.</li>
+            <li><strong>The Rule of Three:</strong> People remember three things. Give three reasons or three steps.</li>
+        </ul>
+    </div>
+
+    <div class="resource-section">
+        <h3>Rhetoric Lab</h3>
+        <p>Goal: Use persuasive language, metaphors, and storytelling to move your audience.</p>
+        <ul class="tip-list">
+            <li><strong>The Three Pillars:</strong> Ethos (authority), Pathos (emotion), and Logos (logic).</li>
+            <li><strong>Vivid Metaphor:</strong> Explain an abstract concept using a physical object (e.g., 'Life is a staircase').</li>
+            <li><strong>The Call to Action:</strong> Always end a rhetorical speech by telling the audience exactly what to do or feel.</li>
+        </ul>
+    </div>
+</div>
+
+<main>
+    <div class="glass-panel">
+        <div id="topic-text">Ready to talk? <br> Choose a topic to begin.</div>
+    </div>
+
+    <div class="timer-container">
+        <div class="timer" id="timer-display">00:03</div>
+        <div id="status">Ready when you are</div>
+    </div>
+
+    <div class="controls">
+        <button id="btn-spin" class="btn-prism">Get Topic</button>
+        <button id="btn-start" class="btn-prism">Start Speaking</button>
+        <button id="btn-reset" class="btn-prism">Reset</button>
+    </div>
+</main>
+
+<script>
+    $(document).ready(function() {
+        let topics = {};
+
+        // Load topics from JSON
+        $.getJSON('topics.json', function(data) {
+            topics = data;
+            $('#status').text('Ready when you are');
+        }).fail(function() {
+            $('#status').text('Error loading topics');
+        });
+
+        let currentDiff = 'easy';
+        let currentCat = 'all';
+        let currentGoal = 'all';
+        let timeLeft = 3;
+        let timer = null;
+        let isRunning = false;
+
+        // Optimized Star Count
+        const starsContainer = $('<div></div>').attr('id', 'stars-container').appendTo('body');
+        for (let i = 0; i < 30; i++) {
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            const size = Math.random() * 2 + 1;
+            const duration = Math.random() * 3 + 2;
+            const delay = Math.random() * 5;
+            starsContainer.append(`<div class="star" style="position:fixed; background:#fff; border-radius:50%; pointer-events:none; left:${x}%; top:${y}%; width:${size}px; height:${size}px; opacity:0; animation: twinkle ${duration}s infinite ease-in-out; animation-delay:${delay}s"></div>`);
+        }
+
+        $('.diff-btn').click(function() {
+            const type = $(this).data('type');
+            const value = $(this).data('value');
+
+            // Set active state for the specific group
+            $(`.diff-btn[data-type="${type}"]`).removeClass('active');
+            $(this).addClass('active');
+
+            if (type === 'difficulty') currentDiff = value;
+            if (type === 'category') currentCat = value;
+            if (type === 'goal') currentGoal = value;
+        });
+
+        function updateDisplay() {
+            let mins = Math.floor(timeLeft / 60);
+            let secs = timeLeft % 60;
+            $('#timer-display').text(
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+            );
+            
+            if (timeLeft < 15 && timeLeft > 0) {
+                $('#timer-display').addClass('warning');
+            } else {
+                $('#timer-display').removeClass('warning');
+            }
+        }
+
+        $('#btn-spin').click(function() {
+            const $text = $('#topic-text');
+            const diffTopics = topics[currentDiff] || [];
+            
+            // Triple Filter
+            let filteredTopics = diffTopics;
+            if (currentCat !== 'all') {
+                filteredTopics = filteredTopics.filter(t => t.category === currentCat);
+            }
+            if (currentGoal !== 'all') {
+                filteredTopics = filteredTopics.filter(t => t.goal === currentGoal);
+            }
+
+            if (filteredTopics.length === 0) {
+                $text.html("No topics found for this selection.");
+                return;
+            }
+
+            const finalTopic = filteredTopics[Math.floor(Math.random() * filteredTopics.length)].text;
+
+            $text.css({opacity: 0, filter: 'blur(10px)'});
+
+            setTimeout(() => {
+                $text.html(finalTopic).css({opacity: 1, filter: 'blur(0)'});
+                $('#status').text('Topic Found');
+            }, 400);
+        });
+
+        $('#btn-start').click(function() {
+            if (isRunning) {
+                clearInterval(timer);
+                $(this).text('Resume');
+                $('#status').text('Paused');
+            } else {
+                $(this).text('Pause');
+                $('#status').text('Your turn');
+                timer = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                    } else {
+                        clearInterval(timer);
+                        triggerWin();
+                    }
+                }, 1000);
+            }
+            isRunning = !isRunning;
+        });
+
+        function triggerWin() {
+            const colors = ['#ff00ff', '#00ffff', '#ffff00', '#fff'];
+            for(let i = 0; i < 30; i++) {
+                const c = $('<div class="crystal"></div>');
+                const tx = (Math.random() - 0.5) * 800;
+                const ty = (Math.random() - 0.5) * 800;
+                c.css({
+                    left: '50%', top: '50%',
+                    background: colors[Math.floor(Math.random()*colors.length)],
+                    '--tx': `${tx}px`,
+                    '--ty': `${ty}px`,
+                    animationDelay: (Math.random() * 1) + 's'
+                });
+                $('body').append(c);
+                setTimeout(() => c.remove(), 3000);
+            }
+            $('#status').text('Well Done!');
+            $('#btn-start').text('Start Speaking');
+            isRunning = false;
+        }
+
+        $('#btn-reset').click(function() {
+            clearInterval(timer);
+            isRunning = false;
+            timeLeft = 120;
+            currentDiff = 'easy';
+            currentCat = 'all';
+            currentGoal = 'all';
+            updateDisplay();
+            $('#btn-start').text('Start Speaking');
+            $('#status').text('Ready when you are');
+            $('#topic-text').html('Ready to talk? <br> Choose a topic to begin.');
+            
+            // Reset UI active states
+            $('.diff-btn').removeClass('active');
+            $('.diff-btn[data-value="easy"][data-type="difficulty"]').addClass('active');
+            $('.diff-btn[data-value="all"][data-type="category"]').addClass('active');
+            $('.diff-btn[data-value="all"][data-type="goal"]').addClass('active');
+        });
+
+        // Drawer Logic
+        $('#open-tips').click(function() {
+            $('#drawer').addClass('open');
+            $('#overlay').addClass('visible');
+        });
+
+        $('#close-tips, #overlay').click(function() {
+            $('#drawer').removeClass('open');
+            $('#overlay').removeClass('visible');
+        });
+
+        updateDisplay();
+    });
+</script>
+</body>
+</html>
