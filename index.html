@@ -363,7 +363,7 @@
             top: 25px; left: 50%;
             transform: translateX(-50%) translateY(10px);
             width: auto;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             font-family: 'Quicksand', sans-serif;
@@ -373,13 +373,15 @@
             font-weight: 600;
             color: #7000ff;
             opacity: 0;
-            transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+            transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
             pointer-events: none;
             white-space: nowrap;
             text-shadow: 0 0 15px rgba(112, 0, 255, 0.3);
+            z-index: 100;
         }
 
         body.win-mode #win-message {
+            display: flex;
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
@@ -594,6 +596,7 @@
         let savedTime = parseInt(localStorage.getItem('speechSessionTimer')) || 60;
         let timeLeft = savedTime;
         let timer = null;
+        let winTimeout = null;
         let isRunning = false;
         let topicSelected = false;
 
@@ -626,12 +629,43 @@
             let label = checked.length === 3 ? 'All' : (checked.length === 0 ? 'None' : checked.map(function() { return $(this).parent().text().trim(); }).get().join(", "));
             $(`#val-${type}`).text(label);
             
+            // Save filters to localStorage
+            const selectedFilters = {
+                diff: $('.diff-check:checked').map(function() { return this.value; }).get(),
+                cat: $('.cat-check:checked').map(function() { return this.value; }).get(),
+                goal: $('.goal-check:checked').map(function() { return this.value; }).get()
+            };
+            localStorage.setItem('speechSessionFilters', JSON.stringify(selectedFilters));
+
             // Auto-reload topic on filter change if not currently speaking
             if (!isRunning) {
                 getNewTopic(true);
                 $('#btn-main').text('Start Timer');
             }
         });
+
+        function loadFilters() {
+            const saved = localStorage.getItem('speechSessionFilters');
+            if (!saved) return;
+            try {
+                const filters = JSON.parse(saved);
+                
+                // Reset all to unchecked first
+                $('.diff-check, .cat-check, .goal-check').prop('checked', false);
+                
+                // Apply saved states
+                if (filters.diff) filters.diff.forEach(v => $(`.diff-check[value="${v}"]`).prop('checked', true));
+                if (filters.cat) filters.cat.forEach(v => $(`.cat-check[value="${v}"]`).prop('checked', true));
+                if (filters.goal) filters.goal.forEach(v => $(`.goal-check[value="${v}"]`).prop('checked', true));
+                
+                // Trigger label updates
+                ['diff', 'cat', 'goal'].forEach(type => {
+                    const checked = $(`.${type}-check:checked`);
+                    let label = checked.length === 3 ? 'All' : (checked.length === 0 ? 'None' : checked.map(function() { return $(this).parent().text().trim(); }).get().join(", "));
+                    $(`#val-${type}`).text(label);
+                });
+            } catch (e) { console.error("Error loading filters", e); }
+        }
 
         function updateDisplay(snap = false) {
             let mins = Math.floor(timeLeft / 60);
@@ -701,6 +735,7 @@
         }
 
         // Initial Load
+        loadFilters();
         $.getJSON('topics.json', function(data) { 
             topics = data; 
             getNewTopic(true);
@@ -717,6 +752,10 @@
 
             // State 1: IDLE / READY -> Start Speaking
             if (!isRunning && ($btn.text() === 'Start Timer' || $btn.text() === 'Start Speaking')) {
+                if (winTimeout) { clearTimeout(winTimeout); winTimeout = null; }
+                $('body').removeClass('win-mode');
+                $('.canvas').removeClass('bloom');
+                
                 $btn.text('Pause');
                 $('#btn-reroll').removeClass('active');
                 $('#timer-display').addClass('active');
@@ -788,12 +827,14 @@
             const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
             $('#win-message').text(randomPhrase);
 
+            if (winTimeout) clearTimeout(winTimeout);
             $('body').addClass('win-mode');
             $('.canvas').addClass('bloom');
             
-            setTimeout(() => {
+            winTimeout = setTimeout(() => {
                 $('body').removeClass('win-mode');
                 $('.canvas').removeClass('bloom');
+                winTimeout = null;
             }, 5000);
 
             // Auto-load next topic after win
@@ -814,6 +855,7 @@
 
         $('#btn-reset-icon').click(function() {
             clearInterval(timer); 
+            if (winTimeout) { clearTimeout(winTimeout); winTimeout = null; }
             isRunning = false;
             $('body').removeClass('win-mode');
             $('.canvas').removeClass('bloom');
