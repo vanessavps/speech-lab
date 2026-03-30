@@ -227,8 +227,8 @@
             box-shadow: 0 30px 100px rgba(0,0,0,0.03);
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            padding: 80px;
+            justify-content: flex-start;
+            padding: 60px 80px;
             transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
             z-index: 10;
         }
@@ -247,39 +247,79 @@
         }
 
         .bookmark-timer {
-            position: absolute;
-            top: 0; right: 40px;
-            width: 200px; height: 110px;
-            border-left: 1px solid var(--border);
-            border-right: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
+            margin: 0 auto 40px auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.2);
-            gap: 15px;
+            gap: 20px;
+            z-index: 20;
         }
 
-        .time-adjust { background: transparent; border: none; color: var(--text-dim); font-size: 1.8rem; cursor: pointer; opacity: 0.4; line-height: 1; padding: 0; width: 30px; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .time-adjust { background: transparent; border: none; color: var(--text-dim); font-size: 1.6rem; cursor: pointer; opacity: 0.4; line-height: 1; padding: 0; width: 30px; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
         .time-adjust:hover { opacity: 1; color: #7000ff; }
         .time-adjust:disabled { visibility: hidden; }
         .time-adjust.hidden { visibility: hidden; pointer-events: none; transition: none !important; }
 
-        #btn-reset-icon { font-size: 1.2rem; display: none; }
+        #btn-reset-icon { font-size: 1.1rem; display: none; }
         #btn-reset-icon.active { display: flex; }
 
-        .timer { font-family: 'Quicksand', sans-serif; font-size: 2.4rem; font-weight: 500; color: var(--text-dim); transition: all 0.5s; opacity: 0.3; min-width: 120px; text-align: center; display: flex; align-items: center; justify-content: center; letter-spacing: 1px; }
+        .timer-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+        }
+
+        .timer-svg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            transform: rotate(-90deg);
+            overflow: visible;
+        }
+
+        .timer-track {
+            fill: none;
+            stroke: var(--border);
+            stroke-width: 2;
+        }
+
+        .timer-bar {
+            fill: none;
+            stroke: #7000ff;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-dasharray: 283;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear, stroke 0.3s;
+            filter: drop-shadow(0 0 10px rgba(112, 0, 255, 0.4));
+        }
+
+        .timer-bar.no-transition {
+            transition: none !important;
+        }
+
+        .timer.warning + .timer-svg .timer-bar {
+            stroke: #ff007f;
+            filter: drop-shadow(0 0 15px rgba(255, 0, 127, 0.6));
+        }
+
+        .timer { font-family: 'Quicksand', sans-serif; font-size: 2.2rem; font-weight: 500; color: var(--text-dim); transition: all 0.5s; opacity: 0.3; text-align: center; display: flex; align-items: center; justify-content: center; letter-spacing: 1px; z-index: 5; }
         .timer.active { color: #7000ff; opacity: 1; }
         .timer.warning { color: #ff007f; }
 
         #topic-text { 
             font-family: 'Cormorant Garamond', serif; 
-            font-size: 3rem; 
+            font-size: 2.8rem; 
             font-weight: 300; 
             font-style: italic; 
             line-height: 1.1; 
             color: var(--text); 
-            transition: all 0.8s ease; 
+            transition: all 0.8s ease;
+            text-align: center;
         }
 
         .welcome-beat {
@@ -295,43 +335,53 @@
             text-shadow: 0 0 20px rgba(112, 0, 255, 0.3);
         }
 
-        .topic-wrap { position: relative; width: 100%; }
+        .topic-wrap { 
+            position: relative; 
+            width: 100%; 
+            min-height: 120px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
         #btn-reroll {
             display: none;
             position: absolute;
-            right: -60px; top: 50%; transform: translateY(-50%);
+            right: -60px; 
+            top: 50%; 
+            transform: translateY(-50%);
             background: none; border: none;
             color: #7000ff; font-size: 2.2rem; cursor: pointer;
             opacity: 0.4; transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
             padding: 10px;
+            z-index: 100;
         }
         #btn-reroll:hover { opacity: 1; transform: translateY(-50%) rotate(45deg); }
         #btn-reroll.active { display: block; }
 
         #win-message {
             position: absolute;
-            top: 0; right: 260px;
-            height: 110px;
+            top: 25px; left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: auto;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: center;
             font-family: 'Quicksand', sans-serif;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
             font-weight: 600;
             color: #7000ff;
             opacity: 0;
-            transform: translateX(30px);
             transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
             pointer-events: none;
             white-space: nowrap;
-            text-shadow: 0 0 15px rgba(112, 0, 255, 0.2);
+            text-shadow: 0 0 15px rgba(112, 0, 255, 0.3);
         }
 
         body.win-mode #win-message {
             opacity: 1;
-            transform: translateX(0);
+            transform: translateX(-50%) translateY(0);
         }
 
         .action-bar { position: absolute; bottom: 40px; right: 40px; display: flex; gap: 15px; }
@@ -398,6 +448,21 @@
             main { padding: 0 20px 60px 20px; }
             .canvas { padding: 20px 25px 120px 25px; min-height: 400px; border: none; background: transparent; box-shadow: none; }
             #topic-text { font-size: 1.8rem; text-align: center; }
+            #btn-reroll {
+                position: relative;
+                right: auto;
+                top: auto;
+                transform: none;
+                margin: 0 auto 20px auto;
+                width: 50px;
+                height: 50px;
+                display: none;
+                align-items: center;
+                justify-content: center;
+            }
+            #btn-reroll.active { display: flex; }
+            #btn-reroll:hover { transform: rotate(45deg); }
+            
             .bookmark-timer { position: relative; right: auto; top: auto; width: 100%; height: auto; border: none; margin-bottom: 60px; background: transparent; }
             
             #win-message {
@@ -498,7 +563,15 @@
                 <button class="time-adjust" id="time-plus">+</button>
                 <button class="time-adjust" id="btn-reset-icon" title="Reset Timer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">↺</button>
             </div>
-            <div class="timer" id="timer-display">01:00</div>
+            
+            <div class="timer-container">
+                <svg class="timer-svg" viewBox="0 0 100 100">
+                    <circle class="timer-track" cx="50" cy="50" r="45"></circle>
+                    <circle class="timer-bar" cx="50" cy="50" r="45"></circle>
+                </svg>
+                <div class="timer" id="timer-display">01:00</div>
+            </div>
+
             <button class="time-adjust" id="time-minus">-</button>
         </div>
 
@@ -560,22 +633,40 @@
             }
         });
 
-        function updateDisplay() {
+        function updateDisplay(snap = false) {
             let mins = Math.floor(timeLeft / 60);
             let secs = timeLeft % 60;
             $('#timer-display').text(`${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`);
+            
+            // Update Orbital Arch
+            const initialTime = parseInt(localStorage.getItem('speechSessionTimer')) || 60;
+            
+            // Refined progress calculation to prevent early completion
+            const progress = timeLeft / initialTime;
+            const offset = 283 - (progress * 283);
+            
+            const $bar = $('.timer-bar');
+            if (snap) {
+                $bar.addClass('no-transition');
+                $bar.css('stroke-dashoffset', 0); // Reset to full
+                $bar[0].offsetHeight; 
+                $bar.removeClass('no-transition');
+            } else {
+                $bar.css('stroke-dashoffset', offset);
+            }
+
             if (timeLeft < 15 && timeLeft > 0) $('#timer-display').addClass('warning');
             else $('#timer-display').removeClass('warning');
         }
 
         $('#time-plus').click(function() { 
-            timeLeft += 30; 
+            timeLeft += 30;
             if (!topicSelected) localStorage.setItem('speechSessionTimer', timeLeft); 
             updateDisplay(); 
         });
         $('#time-minus').click(function() { 
-            if (timeLeft > 30) { 
-                timeLeft -= 30; 
+            if (timeLeft > 30) {
+                timeLeft -= 30;
                 if (!topicSelected) localStorage.setItem('speechSessionTimer', timeLeft); 
                 updateDisplay(); 
             } 
@@ -712,7 +803,7 @@
             
             // Reset timer for next round
             timeLeft = parseInt(localStorage.getItem('speechSessionTimer')) || 60;
-            updateDisplay();
+            updateDisplay(true);
             $('#timer-display').removeClass('active');
 
             $('.time-adjust').prop('disabled', false); 
@@ -729,7 +820,7 @@
             $('#btn-main').text('Start Timer');
             $('#btn-reroll').addClass('active');
             timeLeft = parseInt(localStorage.getItem('speechSessionTimer')) || 60;
-            updateDisplay();
+            updateDisplay(true);
             $('.time-adjust').prop('disabled', false);
             $('#time-plus, #time-minus').removeClass('hidden'); $(this).removeClass('active');
             $('#timer-display').removeClass('active');
