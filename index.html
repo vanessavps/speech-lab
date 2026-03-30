@@ -263,6 +263,7 @@
         .time-adjust { background: transparent; border: none; color: var(--text-dim); font-size: 1.8rem; cursor: pointer; opacity: 0.4; line-height: 1; padding: 0; width: 30px; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
         .time-adjust:hover { opacity: 1; color: #7000ff; }
         .time-adjust:disabled { visibility: hidden; }
+        .time-adjust.hidden { visibility: hidden; pointer-events: none; transition: none !important; }
 
         #btn-reset-icon { font-size: 1.2rem; display: none; }
         #btn-reset-icon.active { display: flex; }
@@ -281,9 +282,31 @@
             transition: all 0.8s ease; 
         }
 
+        .welcome-beat {
+            animation: topicEntrance 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        @keyframes topicEntrance {
+            0% { opacity: 0; transform: translateY(10px); filter: blur(10px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
         .bloom #topic-text {
             text-shadow: 0 0 20px rgba(112, 0, 255, 0.3);
         }
+
+        .topic-wrap { position: relative; width: 100%; }
+        #btn-reroll {
+            display: none;
+            position: absolute;
+            right: -60px; top: 50%; transform: translateY(-50%);
+            background: none; border: none;
+            color: #7000ff; font-size: 2.2rem; cursor: pointer;
+            opacity: 0.4; transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            padding: 10px;
+        }
+        #btn-reroll:hover { opacity: 1; transform: translateY(-50%) rotate(45deg); }
+        #btn-reroll.active { display: block; }
 
         #win-message {
             position: absolute;
@@ -480,12 +503,12 @@
         </div>
 
         <div class="topic-wrap">
-            <div id="topic-text">Ready to talk? <br> Your stage is waiting.</div>
+            <div id="topic-text">Loading stage...</div>
+            <button id="btn-reroll" class="active" title="Reroll Topic">↻</button>
         </div>
 
         <div class="action-bar">
-            <button id="btn-spin" class="btn-editorial btn-secondary">Get Topic</button>
-            <button id="btn-start" class="btn-editorial" disabled>Start Speaking</button>
+            <button id="btn-main" class="btn-editorial">Start Timer</button>
         </div>
     </div>
 </main>
@@ -529,6 +552,12 @@
             const checked = $(`.${type}-check:checked`);
             let label = checked.length === 3 ? 'All' : (checked.length === 0 ? 'None' : checked.map(function() { return $(this).parent().text().trim(); }).get().join(", "));
             $(`#val-${type}`).text(label);
+            
+            // Auto-reload topic on filter change if not currently speaking
+            if (!isRunning) {
+                getNewTopic(true);
+                $('#btn-main').text('Start Timer');
+            }
         });
 
         function updateDisplay() {
@@ -552,25 +581,7 @@
             } 
         });
 
-        $('#btn-spin').click(function() {
-            if (isRunning) {
-                $('#topic-text').css('color', '#ff007f');
-                setTimeout(() => { $('#topic-text').css('color', 'var(--text)'); }, 1500);
-                return;
-            }
-            
-            // Reset timer state
-            clearInterval(timer);
-            isRunning = false;
-            timeLeft = parseInt(localStorage.getItem('speechSessionTimer')) || 60;
-            updateDisplay();
-            $('#btn-start').text('Start Speaking').prop('disabled', false);
-            $('.time-adjust').prop('disabled', false);
-            $('#time-plus, #time-minus').show(); $('#btn-reset-icon').removeClass('active');
-            $('#timer-display').removeClass('active');
-            $('body').removeClass('win-mode');
-            $('.canvas').removeClass('bloom');
-
+        function getNewTopic(isWelcome = false) {
             const $text = $('#topic-text');
             const diffs = $('.diff-check:checked').map(function() { return this.value; }).get();
             const cats = $('.cat-check:checked').map(function() { return this.value; }).get();
@@ -578,29 +589,93 @@
             let pool = [];
             diffs.forEach(d => { if(topics[d]) pool = pool.concat(topics[d]); });
             let filteredTopics = pool.filter(t => cats.includes(t.category) && goals.includes(t.goal));
-            if (filteredTopics.length === 0) { $text.html("No matches."); topicSelected = false; return; }
+            
+            if (filteredTopics.length === 0) { 
+                $text.html("No matches."); 
+                topicSelected = false; 
+                return false; 
+            }
+            
             const finalTopic = filteredTopics[Math.floor(Math.random() * filteredTopics.length)].text;
             topicSelected = true;
-            $text.css({opacity: 0, filter: 'blur(10px)', color: 'var(--text)'});
-            setTimeout(() => { $text.html(finalTopic).css({opacity: 1, filter: 'blur(0)'}); }, 400);
+            
+            if (isWelcome) {
+                $text.html(finalTopic).addClass('welcome-beat');
+                setTimeout(() => $text.removeClass('welcome-beat'), 1200);
+            } else {
+                $text.css({opacity: 0, filter: 'blur(10px)', color: 'var(--text)'});
+                setTimeout(() => { $text.html(finalTopic).css({opacity: 1, filter: 'blur(0)'}); }, 400);
+            }
+            return true;
+        }
+
+        // Initial Load
+        $.getJSON('topics.json', function(data) { 
+            topics = data; 
+            getNewTopic(true);
+            topicSelected = true;
         });
 
-        $('#btn-start').click(function() {
-            if (!topicSelected) {
-                $('#topic-text').css('color', '#ff007f');
-                setTimeout(() => { $('#topic-text').css('color', 'var(--text)'); }, 1500);
+        $('#btn-reroll').click(function() {
+            getNewTopic();
+            $('#btn-main').text('Start Timer');
+        });
+
+        $('#btn-main').click(function() {
+            const $btn = $(this);
+
+            // State 1: IDLE / READY -> Start Speaking
+            if (!isRunning && ($btn.text() === 'Start Timer' || $btn.text() === 'Start Speaking')) {
+                $btn.text('Pause');
+                $('#btn-reroll').removeClass('active');
+                $('#timer-display').addClass('active');
+                $('.time-adjust').prop('disabled', true);
+                $('#time-plus, #time-minus').addClass('hidden');
+                $('#btn-reset-icon').addClass('active').prop('disabled', false);
+                
+                isRunning = true;
+                timer = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                    } else {
+                        clearInterval(timer);
+                        triggerWin();
+                    }
+                }, 1000);
                 return;
             }
+
+            // State 3: RUNNING -> Pause
             if (isRunning) {
-                clearInterval(timer); $(this).text('Resume'); $('.time-adjust').prop('disabled', false);
-                $('#time-plus, #time-minus').show(); $('#btn-reset-icon').removeClass('active');
-            } else {
-                $(this).text('Pause'); $('#timer-display').addClass('active'); $('.time-adjust').prop('disabled', true);
-                $('#time-plus, #time-minus').hide(); $('#btn-reset-icon').addClass('active').prop('disabled', false);
-                timer = setInterval(() => { if (timeLeft > 0) { timeLeft--; updateDisplay(); } else { clearInterval(timer); triggerWin(); } }, 1000);
+                clearInterval(timer);
+                isRunning = false;
+                $btn.text('Resume');
+                $('.time-adjust').prop('disabled', false);
+                $('#time-plus, #time-minus').removeClass('hidden');
+                $('#btn-reset-icon').removeClass('active');
+                return;
             }
-            isRunning = !isRunning;
-            $('#btn-spin').prop('disabled', isRunning);
+
+            // State 4: PAUSED -> Resume
+            if (!isRunning && $btn.text() === 'Resume') {
+                $btn.text('Pause');
+                isRunning = true;
+                $('.time-adjust').prop('disabled', true);
+                $('#time-plus, #time-minus').addClass('hidden');
+                $('#btn-reset-icon').addClass('active').prop('disabled', false);
+                
+                timer = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                    } else {
+                        clearInterval(timer);
+                        triggerWin();
+                    }
+                }, 1000);
+                return;
+            }
         });
 
         function triggerWin() {
@@ -630,27 +705,34 @@
                 $('.canvas').removeClass('bloom');
             }, 5000);
 
-            $('#btn-start').text('Start Speaking').prop('disabled', true);
+            // Auto-load next topic after win
+            getNewTopic(true);
+            $('#btn-main').text('Start Timer');
+            $('#btn-reroll').addClass('active');
+            
+            // Reset timer for next round
+            timeLeft = parseInt(localStorage.getItem('speechSessionTimer')) || 60;
+            updateDisplay();
+            $('#timer-display').removeClass('active');
+
             $('.time-adjust').prop('disabled', false); 
-            $('#time-plus, #time-minus').show(); $('#btn-reset-icon').removeClass('active');
+            $('#time-plus, #time-minus').removeClass('hidden'); $('#btn-reset-icon').removeClass('active');
             isRunning = false;
-            topicSelected = false;
-            $('#btn-spin').prop('disabled', false);
+            topicSelected = true;
         }
 
         $('#btn-reset-icon').click(function() {
             clearInterval(timer); 
             isRunning = false;
-            // keep topicSelected = true
             $('body').removeClass('win-mode');
             $('.canvas').removeClass('bloom');
-            $('#btn-start').prop('disabled', false).text('Start Speaking');
+            $('#btn-main').text('Start Timer');
+            $('#btn-reroll').addClass('active');
             timeLeft = parseInt(localStorage.getItem('speechSessionTimer')) || 60;
             updateDisplay();
             $('.time-adjust').prop('disabled', false);
-            $('#time-plus, #time-minus').show(); $(this).removeClass('active');
+            $('#time-plus, #time-minus').removeClass('hidden'); $(this).removeClass('active');
             $('#timer-display').removeClass('active');
-            $('#btn-spin').prop('disabled', false);
         });
 
         updateDisplay();
