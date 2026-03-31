@@ -657,6 +657,7 @@
                 z-index: 2000;
             }
             aside.open { transform: translateX(0); }
+            aside .resources-link { display: none; }
 
             .sidebar-nav { overflow-y: auto; flex: 1; }
 
@@ -748,7 +749,10 @@
     <a href="index.html" style="text-decoration: none;">
         <div class="logo" style="margin-bottom: 0; font-size: 1.4rem;">SpeechLab.</div>
     </a>
-    <div class="settings-toggle" id="toggle-settings">Filters</div>
+    <div style="display: flex; gap: 20px; align-items: center;">
+        <div class="settings-toggle" id="toggle-settings">Filters</div>
+        <a href="resources.html" target="_blank" class="settings-toggle" style="text-decoration: underline; text-underline-offset: 4px;">Resources</a>
+    </div>
 </div>
 
 <div class="mobile-aura-wrap" id="aura-wrap-mobile">
