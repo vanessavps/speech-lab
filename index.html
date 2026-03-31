@@ -20,10 +20,12 @@
         body {
             font-family: 'Quicksand', sans-serif;
             color: var(--text);
-            min-height: 100vh;
+            height: 100vh;
+            height: 100dvh;
             display: flex;
             background: #fff;
             transition: background 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+            overflow: hidden;
         }
 
         .holo-bg {
@@ -58,6 +60,7 @@
             flex-shrink: 0;
             position: sticky;
             top: 0;
+            overflow-y: auto;
         }
 
         .logo {
@@ -84,6 +87,7 @@
             position: relative;
             transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
             width: 100%;
+            flex-shrink: 0;
         }
 
         .aura-counter-wrap:hover {
@@ -195,6 +199,7 @@
         .filter-section {
             border-bottom: 1px solid var(--border);
             margin-bottom: 10px;
+            flex-shrink: 0;
         }
 
         .choice-trigger {
@@ -305,6 +310,7 @@
             transition: color 0.3s, opacity 0.3s;
             padding-bottom: 20px;
             display: inline-block;
+            flex-shrink: 0;
         }
         .resources-link:hover { opacity: 0.7; }
 
@@ -317,6 +323,7 @@
             justify-content: center;
             z-index: 10;
             min-width: 0;
+            height: 100%;
         }
 
         .canvas {
@@ -635,8 +642,8 @@
         }
 
         @media (max-width: 1000px) {
-            body { flex-direction: column; }
-            .mobile-header { display: flex; }
+            body { flex-direction: column; overflow: hidden; height: 100vh; height: 100dvh; }
+            .mobile-header { display: flex; flex-shrink: 0; }
             .mobile-aura-wrap { display: flex; }
             
             aside {
@@ -653,14 +660,32 @@
 
             .sidebar-nav { overflow-y: auto; flex: 1; }
 
-            main { padding: 80px 20px 20px 20px; }
-            .canvas { padding: 60px 20px 20px 25px; min-height: 220px; border: none; background: transparent; box-shadow: none; }
+            main { 
+                padding: 20px; 
+                padding-top: 90px;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+            }
+            .canvas { 
+                padding: 40px 20px; 
+                min-height: 0; 
+                height: auto;
+                max-height: 100%;
+                border: none; 
+                background: transparent; 
+                box-shadow: none; 
+                justify-content: center;
+            }
             #topic-text { font-size: 1.6rem; text-align: center; margin-bottom: 15px; }
             
             .topic-wrap { 
                 flex-direction: column; 
                 min-height: 140px; 
-                justify-content: flex-start; 
+                justify-content: center; 
                 padding-top: 5px;
                 padding-bottom: 50px;
             }
@@ -683,11 +708,11 @@
             #btn-reroll.active { display: flex; }
             #btn-reroll:hover { transform: var(--base-trans) scale(1.1); }
             
-            .bookmark-timer { position: relative; right: auto; top: auto; width: 100%; height: auto; border: none; margin-bottom: 30px; background: transparent; }
+            .bookmark-timer { position: relative; right: auto; top: auto; width: 100%; height: auto; border: none; margin-bottom: 20px; background: transparent; }
             
             #win-message {
                 position: absolute;
-                top: 25px;
+                top: 10px;
                 left: 50%;
                 transform: translateX(-50%) translateY(10px);
                 width: 100%;
@@ -699,7 +724,7 @@
             }
 
             .timer { font-size: 1.6rem; opacity: 1; color: #7000ff; }
-            .action-bar { width: 100%; bottom: 0; right: 0; display: flex; flex-direction: column; gap: 12px; padding: 0; position: relative; margin-top: 40px; }
+            .action-bar { width: 100%; bottom: 0; right: 0; display: flex; flex-direction: column; gap: 12px; padding: 0; position: relative; margin-top: 20px; }
             .btn-editorial { padding: 12px 20px; font-size: 0.7rem; width: 100%; text-align: center; }
             .btn-secondary { width: 100%; }
             
@@ -712,6 +737,8 @@
                 z-index: 1500;
             }
             .overlay.active { display: block; }
+            
+            .method-hint { margin-bottom: 10px; }
         }
     </style>
 </head>
