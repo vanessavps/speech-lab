@@ -26,8 +26,6 @@
             transition: background 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        body.win-mode { background: #0a0a0f; }
-
         .holo-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -40,21 +38,6 @@
             filter: saturate(4) brightness(0.3) blur(20px);
             transform: scale(1.2);
         }
-
-        /* Bloom Effect */
-        .bloom-aura {
-            position: fixed;
-            top: 50%; left: 50%;
-            width: 100vmax; height: 100vmax;
-            background: radial-gradient(circle, rgba(112, 0, 255, 0.4) 0%, rgba(255, 0, 255, 0.2) 30%, transparent 70%);
-            transform: translate(-50%, -50%) scale(0);
-            z-index: 5;
-            pointer-events: none;
-            transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1), opacity 1.2s;
-            opacity: 0;
-        }
-
-        body.win-mode .bloom-aura { transform: translate(-50%, -50%) scale(1.5); opacity: 1; animation: auroraRotate 10s linear infinite; }
 
         @keyframes auroraRotate {
             from { transform: translate(-50%, -50%) scale(1.5) rotate(0deg); }
@@ -85,7 +68,73 @@
             background: linear-gradient(90deg, #7000ff, #ff00ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 60px;
+            margin-bottom: 30px;
+        }
+
+        /* Aura Counter */
+        .aura-counter-wrap {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(112, 0, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(112, 0, 255, 0.05);
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .aura-reset-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(112, 0, 255, 0.9);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+            z-index: 10;
+        }
+
+        .aura-counter-wrap.show-reset .aura-reset-overlay,
+        .mobile-aura-wrap.show-reset .aura-reset-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .aura-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        #aura-total {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #7000ff;
+            text-shadow: 0 0 20px rgba(112, 0, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        #aura-total.pop {
+            animation: counterPop 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        @keyframes counterPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); color: #ff00ff; text-shadow: 0 0 30px rgba(255, 0, 255, 0.6); }
+            100% { transform: scale(1); }
         }
 
         /* Collapsible Filters */
@@ -368,29 +417,47 @@
         #win-message {
             position: absolute;
             top: 25px; left: 50%;
-            transform: translateX(-50%) translateY(10px);
+            transform: translateX(-50%);
             width: auto;
             display: none;
             align-items: center;
             justify-content: center;
             font-family: 'Quicksand', sans-serif;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 4px;
             font-weight: 600;
             color: #7000ff;
             opacity: 0;
-            transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
             pointer-events: none;
             white-space: nowrap;
-            text-shadow: 0 0 15px rgba(112, 0, 255, 0.3);
             z-index: 100;
         }
 
-        body.win-mode #win-message {
+        #win-message.show {
             display: flex;
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
+            animation: auraPop 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards,
+                       auraGlow 2s ease-in-out infinite 0.8s;
+        }
+
+        #win-message.fade-out {
+            animation: auraFadeOut 0.5s ease-in forwards;
+        }
+
+        @keyframes auraFadeOut {
+            0% { opacity: 1; transform: translateX(-50%) scale(1); }
+            100% { opacity: 0; transform: translateX(-50%) scale(0.9) translateY(-10px); }
+        }
+
+        @keyframes auraPop {
+            0% { transform: translateX(-50%) translateY(20px) scale(0.5); opacity: 0; }
+            45% { transform: translateX(-50%) translateY(-10px) scale(1.1); opacity: 1; }
+            100% { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+        }
+
+        @keyframes auraGlow {
+            0%, 100% { text-shadow: 0 0 10px rgba(112, 0, 255, 0.4), 0 0 20px rgba(255, 0, 255, 0.2); }
+            50% { text-shadow: 0 0 25px rgba(112, 0, 255, 0.8), 0 0 40px rgba(255, 0, 255, 0.6), 0 0 60px rgba(0, 255, 255, 0.4); color: #ff00ff; }
         }
 
         .action-bar { position: absolute; bottom: 40px; right: 40px; display: flex; gap: 15px; }
@@ -434,6 +501,34 @@
             cursor: pointer;
             text-decoration: underline;
             text-underline-offset: 4px;
+        }
+
+        /* Mobile Aura */
+        .mobile-aura-wrap {
+            display: flex;
+            align-items: center;
+            background: rgba(112, 0, 255, 0.05);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(112, 0, 255, 0.1);
+        }
+
+        #aura-mobile {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #7000ff;
+            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        #aura-mobile.pop {
+            animation: counterPopMobile 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        @keyframes counterPopMobile {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); color: #ff00ff; }
+            100% { transform: scale(1); }
         }
 
         .method-hint {
@@ -523,6 +618,11 @@
     <a href="index.html" style="text-decoration: none;">
         <div class="logo" style="margin-bottom: 0; font-size: 1.4rem;">SpeechLab.</div>
     </a>
+    <div class="mobile-aura-wrap" id="aura-wrap-mobile">
+        <span class="aura-label" style="margin-bottom: 0; margin-right: 8px; display: inline-block;">Aura</span>
+        <span id="aura-mobile">0</span>
+        <div class="aura-reset-overlay">Reset</div>
+    </div>
     <div class="settings-toggle" id="toggle-settings">Filters</div>
 </div>
 
@@ -530,14 +630,17 @@
 
 <div class="holo-bg"></div>
 
-<div class="bloom-aura"></div>
-
 <aside id="main-sidebar">
     <a href="index.html" style="text-decoration: none;">
         <div class="logo">SpeechLab</div>
     </a>
     
     <div class="sidebar-nav">
+        <div class="aura-counter-wrap" id="aura-wrap-desktop">
+            <span class="aura-label">Total Aura</span>
+            <div id="aura-total">0</div>
+            <div class="aura-reset-overlay">Reset Aura</div>
+        </div>
         <div class="filter-section">
             <div class="choice-trigger" id="diff-trigger">
                 <span class="choice-label">Experience Level</span>
@@ -760,6 +863,26 @@
 
         // Initial Load
         loadFilters();
+        const savedAura = parseInt(localStorage.getItem('speechSessionAura')) || 0;
+        $('#aura-total, #aura-mobile').text(savedAura);
+
+        // Aura Reset Logic
+        $('#aura-wrap-desktop, #aura-wrap-mobile').click(function(e) {
+            const $wrap = $(this);
+            if ($wrap.hasClass('show-reset')) {
+                // If reset is clicked
+                if ($(e.target).hasClass('aura-reset-overlay')) {
+                    localStorage.setItem('speechSessionAura', 0);
+                    $('#aura-total, #aura-mobile').text(0);
+                }
+                $wrap.removeClass('show-reset');
+            } else {
+                $wrap.addClass('show-reset');
+                // Auto-hide after 3 seconds if not clicked
+                setTimeout(() => $wrap.removeClass('show-reset'), 3000);
+            }
+        });
+
         $.getJSON('topics.json', function(data) { 
             topics = data; 
             getNewTopic(true);
@@ -838,7 +961,7 @@
 
         function triggerWin() {
             const phrases = [
-                "Aura +100",
+                "Aura +10",
                 "Maximum Aura Attained",
                 "Total Glow Up",
                 "Main Character Energy",
@@ -853,17 +976,35 @@
                 "Iconic Energy"
             ];
             const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-            $('#win-message').text(randomPhrase);
+            const $winMsg = $('#win-message');
+            $winMsg.text(randomPhrase).removeClass('fade-out').addClass('show');
 
-            if (winTimeout) clearTimeout(winTimeout);
-            $('body').addClass('win-mode');
-            $('.canvas').addClass('bloom');
+            // Aura Increment Logic
+            let currentAura = parseInt(localStorage.getItem('speechSessionAura')) || 0;
+            currentAura += 10;
+            localStorage.setItem('speechSessionAura', currentAura);
             
-            winTimeout = setTimeout(() => {
-                $('body').removeClass('win-mode');
+            // Trigger Counter Pop
+            const $auraTotal = $('#aura-total, #aura-mobile');
+            $auraTotal.text(currentAura).addClass('pop');
+            setTimeout(() => $auraTotal.removeClass('pop'), 600);
+
+            if (winTimeout) { clearTimeout(winTimeout); winTimeout = null; }
+            
+            // Background Pulse (1.5s)
+            $('.canvas').addClass('bloom');
+            setTimeout(() => {
                 $('.canvas').removeClass('bloom');
-                winTimeout = null;
-            }, 5000);
+            }, 1500);
+
+            // Message Visibility (4s total)
+            winTimeout = setTimeout(() => {
+                $winMsg.addClass('fade-out');
+                setTimeout(() => {
+                    $winMsg.removeClass('show fade-out');
+                    winTimeout = null;
+                }, 500);
+            }, 3500);
 
             // Auto-load next topic after win
             getNewTopic(true);
@@ -885,7 +1026,6 @@
             clearInterval(timer); 
             if (winTimeout) { clearTimeout(winTimeout); winTimeout = null; }
             isRunning = false;
-            $('body').removeClass('win-mode');
             $('.canvas').removeClass('bloom');
             $('#btn-main').text('Start Speaking');
             $('#btn-reroll').addClass('active');
