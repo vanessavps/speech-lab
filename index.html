@@ -37,16 +37,6 @@
             transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        body.win-mode .holo-bg { 
-            filter: saturate(4) brightness(0.3) blur(20px);
-            transform: scale(1.2);
-        }
-
-        @keyframes auroraRotate {
-            from { transform: translate(-50%, -50%) scale(1.5) rotate(0deg); }
-            to { transform: translate(-50%, -50%) scale(1.5) rotate(360deg); }
-        }
-
         /* Desktop Sidebar */
         aside {
             width: 320px;
@@ -73,127 +63,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 30px;
-        }
-
-        /* Refined Aura Section (Editorial Style) */
-        .aura-counter-wrap {
-            margin-bottom: 60px;
-            padding: 20px 0;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-            width: 100%;
-            flex-shrink: 0;
-        }
-
-        .aura-counter-wrap:hover {
-            border-color: #7000ff;
-        }
-
-        .aura-label {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.55rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-dim);
-            margin-bottom: 0;
-            opacity: 0.6;
-        }
-
-        .aura-reset-overlay {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-            z-index: 10;
-            gap: 20px;
-        }
-
-        .aura-counter-wrap .aura-reset-overlay {
-            border-radius: 0;
-        }
-
-        .mobile-aura-wrap .aura-reset-overlay {
-            border-radius: 30px;
-            gap: 15px;
-            padding: 0 10px;
-            background: rgba(255, 255, 255, 0.9);
-        }
-
-        .aura-counter-wrap .aura-reset-msg {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #7000ff;
-            margin-bottom: 0;
-        }
-
-        .aura-confirm, .aura-cancel {
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-        }
-
-        .aura-confirm:hover { transform: scale(1.1); background: rgba(0, 255, 204, 0.1); }
-        .aura-cancel:hover { transform: scale(1.1); background: rgba(255, 77, 77, 0.1); }
-
-        .aura-confirm { color: #00b38f; }
-        .aura-cancel { color: #ff4d4d; }
-
-        .aura-counter-wrap.show-reset .aura-reset-overlay,
-        .mobile-aura-wrap.show-reset .aura-reset-overlay {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .aura-label {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-dim);
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        #aura-total {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2.4rem;
-            font-style: italic;
-            font-weight: 300;
-            color: #7000ff;
-            line-height: 1;
-            text-shadow: 0 0 20px rgba(112, 0, 255, 0.1);
-            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-
-        #aura-total.pop {
-            animation: counterPop 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-
-        @keyframes counterPop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.4); color: #ff00ff; text-shadow: 0 0 30px rgba(255, 0, 255, 0.6); }
-            100% { transform: scale(1); }
         }
 
         /* Collapsible Filters */
@@ -348,6 +217,16 @@
             box-shadow: 0 50px 150px rgba(112, 0, 255, 0.4), 0 0 100px rgba(0, 255, 255, 0.2);
             background: rgba(255, 255, 255, 0.95);
             border-color: #fff;
+        }
+
+        body.win-mode .holo-bg { 
+            filter: saturate(4) brightness(0.3) blur(20px);
+            transform: scale(1.2);
+        }
+
+        @keyframes auroraRotate {
+            from { transform: translate(-50%, -50%) scale(1.5) rotate(0deg); }
+            to { transform: translate(-50%, -50%) scale(1.5) rotate(360deg); }
         }
 
         .canvas::before {
@@ -565,71 +444,6 @@
             text-underline-offset: 4px;
         }
 
-        /* Mobile Aura Floating Pill */
-        .mobile-aura-wrap {
-            display: none;
-            position: fixed;
-            top: 85px;
-            right: 20px;
-            z-index: 1001;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(15px);
-            padding: 8px 14px;
-            border-radius: 30px;
-            border: 1px solid rgba(112, 0, 255, 0.15);
-            box-shadow: 0 10px 25px rgba(112, 0, 255, 0.1);
-            cursor: pointer;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-
-        .aura-reset-hint {
-            margin-left: 10px;
-            font-size: 0.9rem;
-            color: #7000ff;
-            opacity: 0.4;
-            transition: opacity 0.3s;
-        }
-
-        .mobile-aura-wrap:hover .aura-reset-hint {
-            opacity: 1;
-        }
-
-        .mobile-aura-wrap .aura-reset-overlay {
-            border-radius: 30px;
-            flex-direction: row;
-            gap: 15px;
-            padding: 0 10px;
-            background: rgba(255, 255, 255, 0.9);
-        }
-
-        .mobile-aura-wrap .aura-confirm, 
-        .mobile-aura-wrap .aura-cancel {
-            width: 44px;
-            height: 44px;
-            font-size: 1.4rem;
-            border-radius: 50%;
-        }
-
-        #aura-mobile {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #7000ff;
-            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-
-        #aura-mobile.pop {
-            animation: counterPopMobile 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-
-        @keyframes counterPopMobile {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.3); color: #ff00ff; }
-            100% { transform: scale(1); }
-        }
-
         .method-hint {
             display: block;
             text-align: center;
@@ -787,30 +601,10 @@
             font-weight: 600;
         }
 
-        /* Mobile Aura Pill in Header */
-        .mobile-aura-pill {
-            background: #fff;
-            border-radius: 999px;
-            padding: 5px 12px;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.03);
-            position: relative;
-            cursor: pointer;
-        }
-
-        .mobile-aura-pill .aura-reset-overlay {
-            border-radius: 999px;
-            padding: 0 10px;
-            background: rgba(255, 255, 255, 0.95);
-        }
-
         @media (max-width: 1000px) {
             body { flex-direction: column; overflow-y: auto; height: auto; min-height: 100vh; min-height: 100dvh; }
             .mobile-header { display: flex; flex-shrink: 0; border-bottom: none; }
             .mobile-filter-meta { display: flex; }
-            .mobile-aura-wrap { display: none; }
             
             aside {
                 display: none;
@@ -876,9 +670,6 @@
                 justify-content: center;
                 margin-bottom: 0;
             }
-            body.win-mode #win-message { 
-                transform: translateX(-50%) translateY(0); 
-            }
 
             .timer { font-size: 1.6rem; opacity: 1; color: #7000ff; }
             .action-bar { width: 100%; bottom: 0; right: 0; display: flex; flex-direction: column; gap: 12px; padding: 0; position: relative; margin-top: 20px; }
@@ -906,16 +697,6 @@
         <div class="logo" style="margin-bottom: 0; font-size: 1.4rem;">SpeechLab.</div>
     </a>
     <div style="display: flex; gap: 15px; align-items: center;">
-        <div class="mobile-aura-pill" id="aura-wrap-mobile">
-            <span class="aura-label" style="margin-bottom: 0; font-size: 0.5rem; letter-spacing: 1px;">AURA</span>
-            <span id="aura-mobile" style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-style: italic; color: #7000ff; margin-left: 4px;">0</span>
-            <div class="aura-reset-overlay">
-                <div style="display: flex; gap: 10px;">
-                    <span class="aura-confirm" style="width: 30px; height: 30px; font-size: 1rem;" title="Reset Aura">✓</span>
-                    <span class="aura-cancel" style="width: 30px; height: 30px; font-size: 1rem;" title="Cancel">✕</span>
-                </div>
-            </div>
-        </div>
         <a href="resources.html" target="_blank" class="settings-toggle" style="text-decoration: underline; text-underline-offset: 4px; font-size: 0.65rem;">Resources</a>
     </div>
 </div>
@@ -957,17 +738,6 @@
     </a>
     
     <div class="sidebar-nav">
-        <div class="aura-counter-wrap" id="aura-wrap-desktop">
-            <span class="aura-label">Total Aura</span>
-            <div id="aura-total">0</div>
-            <div class="aura-reset-overlay">
-                <span class="aura-reset-msg">Reset Aura?</span>
-                <div style="display: flex; gap: 20px;">
-                    <span class="aura-confirm" title="Reset Aura">✓</span>
-                    <span class="aura-cancel" title="Cancel">✕</span>
-                </div>
-            </div>
-        </div>
         <div class="filter-section">
             <div class="choice-trigger" id="diff-trigger">
                 <span class="choice-label">Experience Level</span>
@@ -1202,15 +972,15 @@
         $('#time-plus').click(function() {
             if (timeLeft < 1800) {
                 timeLeft += 10;
-                if (!topicSelected) localStorage.setItem('speechSessionTimer', timeLeft);
-                updateDisplay();
+                localStorage.setItem('speechSessionTimer', timeLeft);
+                updateDisplay(true); // snap=true to keep circle full
             }
         });
         $('#time-minus').click(function() { 
             if (timeLeft > 10) {
                 timeLeft -= 10;
-                if (!topicSelected) localStorage.setItem('speechSessionTimer', timeLeft); 
-                updateDisplay(); 
+                localStorage.setItem('speechSessionTimer', timeLeft); 
+                updateDisplay(true); // snap=true to keep circle full
             } 
         });
 
@@ -1244,31 +1014,6 @@
 
         // Initial Load
         loadFilters();
-        const savedAura = parseInt(localStorage.getItem('speechSessionAura')) || 0;
-        $('#aura-total, #aura-mobile').text(savedAura);
-
-        // Aura Reset Logic
-        $('#aura-wrap-desktop, #aura-wrap-mobile').click(function(e) {
-            const $wrap = $(this);
-            const $target = $(e.target);
-
-            if ($wrap.hasClass('show-reset')) {
-                if ($target.hasClass('aura-confirm')) {
-                    localStorage.setItem('speechSessionAura', 0);
-                    $('#aura-total, #aura-mobile').text(0);
-                    $wrap.removeClass('show-reset');
-                } else if ($target.hasClass('aura-cancel')) {
-                    $wrap.removeClass('show-reset');
-                }
-            } else {
-                // Prevent showing reset if clicking the text/number while overlay is active
-                if (!$target.closest('.aura-reset-overlay').length) {
-                    $wrap.addClass('show-reset');
-                    // Auto-hide after 5 seconds if no action
-                    setTimeout(() => $wrap.removeClass('show-reset'), 5000);
-                }
-            }
-        });
 
         $.getJSON('topics.json', function(data) { 
             topics = data; 
@@ -1291,7 +1036,6 @@
             // State 1: IDLE / READY -> Start Speaking
             if (!isRunning && ($btn.text() === 'Start Speaking')) {
                 if (winTimeout) { clearTimeout(winTimeout); winTimeout = null; }
-                $('body').removeClass('win-mode');
                 $('.canvas').removeClass('bloom');
                 
                 $btn.text('Pause');
@@ -1365,16 +1109,6 @@
             const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
             const $winMsg = $('#win-message');
             $winMsg.text(randomPhrase).removeClass('fade-out').addClass('show');
-
-            // Aura Increment Logic
-            let currentAura = parseInt(localStorage.getItem('speechSessionAura')) || 0;
-            currentAura += 10;
-            localStorage.setItem('speechSessionAura', currentAura);
-            
-            // Trigger Counter Pop
-            const $auraTotal = $('#aura-total, #aura-mobile');
-            $auraTotal.text(currentAura).addClass('pop');
-            setTimeout(() => $auraTotal.removeClass('pop'), 600);
 
             if (winTimeout) { clearTimeout(winTimeout); winTimeout = null; }
             
