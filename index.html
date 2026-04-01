@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SpeechLab | Practice Impromptu Speaking</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Quicksand:wght@300;500;600&family=Space+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -660,23 +661,40 @@
         }
 
         .mobile-filter-meta:hover .filter-meta-text,
-        .mobile-filter-meta:hover .filter-meta-caret {
-            color: #7000ff;
-        }
+
 
         .filter-meta-text {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             font-weight: 500;
-            letter-spacing: 0.8px;
+            letter-spacing: 0.6px;
             color: var(--text-dim);
             text-transform: uppercase;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            line-height: 1.4;
+            row-gap: 8px;
         }
 
-        .filter-meta-caret {
-            font-size: 0.5rem;
-            color: var(--text-dim);
-            opacity: 0.6;
-            margin-left: 2px;
+        .filter-meta-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .filter-meta-group:not(:last-child)::after {
+            content: "·";
+            margin: 0 2px;
+            opacity: 0.3;
+            font-weight: 300;
+        }
+
+        .filter-meta-text svg {
+            width: 10px;
+            height: 10px;
+            stroke-width: 2.5px;
+            vertical-align: middle;
+            display: inline-block;
         }
 
         /* Bottom Sheet (Mobile) */
@@ -769,11 +787,30 @@
             font-weight: 600;
         }
 
+        /* Mobile Aura Pill in Header */
+        .mobile-aura-pill {
+            background: #fff;
+            border-radius: 999px;
+            padding: 5px 12px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.03);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .mobile-aura-pill .aura-reset-overlay {
+            border-radius: 999px;
+            padding: 0 10px;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
         @media (max-width: 1000px) {
-            body { flex-direction: column; overflow: hidden; height: 100vh; height: 100dvh; }
+            body { flex-direction: column; overflow-y: auto; height: auto; min-height: 100vh; min-height: 100dvh; }
             .mobile-header { display: flex; flex-shrink: 0; border-bottom: none; }
             .mobile-filter-meta { display: flex; }
-            .mobile-aura-wrap { display: flex; }
+            .mobile-aura-wrap { display: none; }
             
             aside {
                 display: none;
@@ -782,13 +819,13 @@
 
             main { 
                 padding: 20px; 
-                padding-top: 90px;
-                height: 100%;
+                padding-top: 100px;
+                min-height: calc(100dvh - 100px);
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                overflow: hidden;
+                overflow: visible;
             }
             .canvas { 
                 padding: 40px 20px; 
@@ -868,14 +905,29 @@
     <a href="index.html" style="text-decoration: none;">
         <div class="logo" style="margin-bottom: 0; font-size: 1.4rem;">SpeechLab.</div>
     </a>
-    <div style="display: flex; gap: 20px; align-items: center;">
-        <a href="resources.html" target="_blank" class="settings-toggle" style="text-decoration: underline; text-underline-offset: 4px;">Resources</a>
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <div class="mobile-aura-pill" id="aura-wrap-mobile">
+            <span class="aura-label" style="margin-bottom: 0; font-size: 0.5rem; letter-spacing: 1px;">AURA</span>
+            <span id="aura-mobile" style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-style: italic; color: #7000ff; margin-left: 4px;">0</span>
+            <div class="aura-reset-overlay">
+                <div style="display: flex; gap: 10px;">
+                    <span class="aura-confirm" style="width: 30px; height: 30px; font-size: 1rem;" title="Reset Aura">✓</span>
+                    <span class="aura-cancel" style="width: 30px; height: 30px; font-size: 1rem;" title="Cancel">✕</span>
+                </div>
+            </div>
+        </div>
+        <a href="resources.html" target="_blank" class="settings-toggle" style="text-decoration: underline; text-underline-offset: 4px; font-size: 0.65rem;">Resources</a>
     </div>
 </div>
 
 <div class="mobile-filter-meta" id="open-sheet">
-    <span class="filter-meta-text" id="mobile-filter-display">Beginner · All · Fluency</span>
-    <span class="filter-meta-caret">▾</span>
+    <span class="filter-meta-text" id="mobile-filter-display">
+        <span class="filter-meta-group"><i data-lucide="graduation-cap"></i> Beginner</span>
+        <span class="filter-meta-divider">·</span>
+        <span class="filter-meta-group"><i data-lucide="tag"></i> All</span>
+        <span class="filter-meta-divider">·</span>
+        <span class="filter-meta-group"><i data-lucide="crosshair"></i> Fluency</span>
+    </span>
 </div>
 
 <div class="sheet-overlay" id="sheet-overlay"></div>
@@ -892,18 +944,6 @@
     <div class="sheet-group">
         <div class="sheet-group-title">Training Goal</div>
         <div class="sheet-options" id="sheet-opts-goal"></div>
-    </div>
-</div>
-
-<div class="mobile-aura-wrap" id="aura-wrap-mobile">
-    <span class="aura-label" style="margin-bottom: 0; margin-right: 8px; display: inline-block;">Aura</span>
-    <span id="aura-mobile">0</span>
-    <span class="aura-reset-hint">↻</span>
-    <div class="aura-reset-overlay">
-        <div style="display: flex; gap: 15px;">
-            <span class="aura-confirm" title="Reset Aura">✓</span>
-            <span class="aura-cancel" title="Cancel">✕</span>
-        </div>
     </div>
 </div>
 
@@ -970,7 +1010,6 @@
 
 <main>
     <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-        <div class="method-hint">Roll ↻ → Set Time → Start Speaking</div>
         <div class="canvas">
             <div id="win-message">Aura Gained</div>
         <div class="bookmark-timer">
@@ -1062,17 +1101,13 @@
             const diffLabel = $('#val-diff').text();
             const catLabel = $('#val-cat').text();
             const goalLabel = $('#val-goal').text();
-            $('#mobile-filter-display').text(`${diffLabel} · ${catLabel} · ${goalLabel}`);
+            $('#mobile-filter-display').html(`
+                <span class="filter-meta-group"><i data-lucide="graduation-cap"></i> ${diffLabel}</span>
+                <span class="filter-meta-group"><i data-lucide="tag"></i> ${catLabel}</span>
+                <span class="filter-meta-group"><i data-lucide="crosshair"></i> ${goalLabel}</span>
+            `);
+            lucide.createIcons();
         }
-
-        // Wrap existing filter change logic to also update mobile display
-        const originalFilterChange = $('.diff-check, .cat-check, .goal-check').change;
-        $('.diff-check, .cat-check, .goal-check').on('change', function() {
-            updateMobileFilterDisplay();
-        });
-
-        // Initial update
-        updateMobileFilterDisplay();
 
         // Close sidebar on navigation (mobile) - updated for sheet if needed, 
         // but resources link is in header now.
@@ -1097,6 +1132,9 @@
             let label = checked.length === 3 ? 'All' : (checked.length === 0 ? 'None' : checked.map(function() { return $(this).parent().text().trim(); }).get().join(", "));
             $(`#val-${type}`).text(label);
             
+            // Sync mobile display after labels are updated
+            updateMobileFilterDisplay();
+
             // Save filters to localStorage
             const selectedFilters = {
                 diff: $('.diff-check:checked').map(function() { return this.value; }).get(),
@@ -1161,10 +1199,12 @@
             else $('#timer-display').removeClass('warning');
         }
 
-        $('#time-plus').click(function() { 
-            timeLeft += 10;
-            if (!topicSelected) localStorage.setItem('speechSessionTimer', timeLeft); 
-            updateDisplay(); 
+        $('#time-plus').click(function() {
+            if (timeLeft < 1800) {
+                timeLeft += 10;
+                if (!topicSelected) localStorage.setItem('speechSessionTimer', timeLeft);
+                updateDisplay();
+            }
         });
         $('#time-minus').click(function() { 
             if (timeLeft > 10) {
@@ -1384,6 +1424,7 @@
         });
 
         updateDisplay();
+        updateMobileFilterDisplay();
     });
 </script>
 </body>
