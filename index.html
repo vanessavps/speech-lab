@@ -207,7 +207,8 @@
             box-shadow: 0 30px 100px rgba(0,0,0,0.03);
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
+            justify-content: center;
+            align-items: center;
             padding: 60px 80px;
             transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
             z-index: 10;
@@ -237,12 +238,12 @@
         }
 
         .bookmark-timer {
-            margin: 0 auto 40px auto;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 20px;
             z-index: 20;
+            margin-top: 5px;
         }
 
         .time-adjust { background: transparent; border: none; color: var(--text-dim); font-size: 1.6rem; cursor: pointer; opacity: 0.4; line-height: 1; padding: 0; width: 30px; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
@@ -303,13 +304,20 @@
 
         #topic-text { 
             font-family: 'Cormorant Garamond', serif; 
-            font-size: 2.8rem; 
+            font-size: 2.2rem;
             font-weight: 300; 
             font-style: italic; 
-            line-height: 1.1; 
+            line-height: 1.2; 
             color: var(--text); 
             transition: all 0.8s ease;
             text-align: center;
+            max-width: 700px;
+            /* Lock to 3 lines */
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 7.92rem; /* 2.8rem * 1.2 line-height * 3 lines */
         }
 
         .welcome-beat {
@@ -328,31 +336,31 @@
         .topic-wrap { 
             position: relative; 
             width: 100%; 
-            min-height: 120px; 
             display: flex; 
+            flex-direction: column;
             align-items: center; 
             justify-content: center;
+            gap: 10px;
+            min-height: 200px; /* Reserve space to reduce layout jumps */
         }
         #btn-reroll {
             display: none;
             position: absolute;
-            right: -60px; 
-            top: 15px; 
-            --base-trans: none;
-            transform: var(--base-trans);
+            top: 0;
+            right: 0;
             background: none; border: none;
-            color: #7000ff; font-size: 2.2rem; cursor: pointer;
-            opacity: 0.4; transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            color: var(--text-dim); font-size: 1.2rem; cursor: pointer;
+            opacity: 0.3; transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
             padding: 10px;
             z-index: 100;
         }
-        #btn-reroll:hover { opacity: 1; transform: var(--base-trans) scale(1.1); }
+        #btn-reroll:hover { opacity: 1; color: #7000ff; }
         #btn-reroll.active { display: block; }
         #btn-reroll.spinning { animation: spinOnce 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
 
         @keyframes spinOnce {
-            0% { transform: var(--base-trans) rotate(0deg); }
-            100% { transform: var(--base-trans) rotate(360deg); }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         #win-message {
@@ -631,35 +639,45 @@
                 box-shadow: none; 
                 justify-content: center;
             }
-            #topic-text { font-size: 1.6rem; text-align: center; margin-bottom: 15px; }
+
+            #topic-text {
+                font-size: 1.6rem;
+                text-align: center;
+                margin-bottom: 15px;
+                height: 5.76rem;
+            }
             
             .topic-wrap { 
                 flex-direction: column; 
                 min-height: 140px; 
                 justify-content: center; 
                 padding-top: 5px;
-                padding-bottom: 50px;
+                padding-bottom: 25px;
             }
 
             #btn-reroll {
-                position: absolute;
-                bottom: 0;
-                left: 50%;
-                right: auto;
-                top: auto;
-                --base-trans: translateX(-50%);
-                transform: var(--base-trans);
+                display: none;
                 margin: 0;
                 width: 44px;
                 height: 44px;
-                display: none;
                 align-items: center;
                 justify-content: center;
+                top: -40px; /* Move up to avoid overlap */
+                right: -10px;
             }
             #btn-reroll.active { display: flex; }
             #btn-reroll:hover { transform: var(--base-trans) scale(1.1); }
-            
-            .bookmark-timer { position: relative; right: auto; top: auto; width: 100%; height: auto; border: none; margin-bottom: 20px; background: transparent; }
+
+            .bookmark-timer {
+                position: relative;
+                right: auto;
+                top: auto;
+                width: 100%;
+                height: auto;
+                border: none;
+                margin-bottom: 20px;
+                background: transparent;
+            }
             
             #win-message {
                 position: absolute;
@@ -782,6 +800,12 @@
     <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
         <div class="canvas">
             <div id="win-message">Aura Gained</div>
+
+        <div class="topic-wrap">
+            <div id="topic-text">Loading stage...</div>
+            <button id="btn-reroll" class="active" title="Reroll Topic">↻</button>
+        </div>
+
         <div class="bookmark-timer">
             <div style="position: relative; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
                 <button class="time-adjust" id="time-plus">+</button>
@@ -797,11 +821,6 @@
             </div>
 
             <button class="time-adjust" id="time-minus">-</button>
-        </div>
-
-        <div class="topic-wrap">
-            <div id="topic-text">Loading stage...</div>
-            <button id="btn-reroll" class="active" title="Reroll Topic">↻</button>
         </div>
 
         <div class="action-bar">
