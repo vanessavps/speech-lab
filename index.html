@@ -641,25 +641,144 @@
             font-family: 'Space Mono', monospace;
         }
 
+        /* Filter Meta Line (Mobile) */
+        .mobile-filter-meta {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            z-index: 499;
+            padding: 16px 25px 0; /* Match mockup top padding */
+            background: transparent;
+            backdrop-filter: none;
+            border-bottom: none;
+            cursor: pointer;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+        }
+
+        .mobile-filter-meta:hover .filter-meta-text,
+        .mobile-filter-meta:hover .filter-meta-caret {
+            color: #7000ff;
+        }
+
+        .filter-meta-text {
+            font-size: 0.6rem;
+            font-weight: 500;
+            letter-spacing: 0.8px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .filter-meta-caret {
+            font-size: 0.5rem;
+            color: var(--text-dim);
+            opacity: 0.6;
+            margin-left: 2px;
+        }
+
+        /* Bottom Sheet (Mobile) */
+        .sheet-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(26, 26, 46, 0.25);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .sheet-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: #fff;
+            border-radius: 24px 24px 0 0;
+            padding: 16px 28px 40px;
+            z-index: 2001;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .bottom-sheet.open {
+            transform: translateY(0);
+        }
+
+        .sheet-handle {
+            width: 36px;
+            height: 4px;
+            background: #d8d8e4;
+            border-radius: 999px;
+            margin: 0 auto 24px;
+        }
+
+        .sheet-group {
+            margin-bottom: 24px;
+        }
+
+        .sheet-group-title {
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .sheet-options {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .sheet-option {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.25rem;
+            color: var(--text);
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f5;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .sheet-option:last-child { border-bottom: none; }
+        
+        .sheet-option.selected {
+            color: #7000ff;
+        }
+
+        .sheet-option.selected::after {
+            content: '✓';
+            font-family: 'Quicksand', sans-serif;
+            font-style: normal;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
         @media (max-width: 1000px) {
             body { flex-direction: column; overflow: hidden; height: 100vh; height: 100dvh; }
-            .mobile-header { display: flex; flex-shrink: 0; }
+            .mobile-header { display: flex; flex-shrink: 0; border-bottom: none; }
+            .mobile-filter-meta { display: flex; }
             .mobile-aura-wrap { display: flex; }
             
             aside {
-                position: fixed;
-                top: 0; left: 0;
-                width: 300px;
-                height: 100vh;
-                transform: translateX(-100%);
-                transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-                box-shadow: 30px 0 60px rgba(0,0,0,0.1);
-                z-index: 2000;
+                display: none;
             }
-            aside.open { transform: translateX(0); }
-            aside .resources-link { display: none; }
-
-            .sidebar-nav { overflow-y: auto; flex: 1; }
+            /* ... rest of existing mobile styles ... */
 
             main { 
                 padding: 20px; 
@@ -750,8 +869,29 @@
         <div class="logo" style="margin-bottom: 0; font-size: 1.4rem;">SpeechLab.</div>
     </a>
     <div style="display: flex; gap: 20px; align-items: center;">
-        <div class="settings-toggle" id="toggle-settings">Filters</div>
         <a href="resources.html" target="_blank" class="settings-toggle" style="text-decoration: underline; text-underline-offset: 4px;">Resources</a>
+    </div>
+</div>
+
+<div class="mobile-filter-meta" id="open-sheet">
+    <span class="filter-meta-text" id="mobile-filter-display">Beginner · All · Fluency</span>
+    <span class="filter-meta-caret">▾</span>
+</div>
+
+<div class="sheet-overlay" id="sheet-overlay"></div>
+<div class="bottom-sheet" id="bottom-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-group">
+        <div class="sheet-group-title">Experience Level</div>
+        <div class="sheet-options" id="sheet-opts-diff"></div>
+    </div>
+    <div class="sheet-group">
+        <div class="sheet-group-title">Context</div>
+        <div class="sheet-options" id="sheet-opts-cat"></div>
+    </div>
+    <div class="sheet-group">
+        <div class="sheet-group-title">Training Goal</div>
+        <div class="sheet-options" id="sheet-opts-goal"></div>
     </div>
 </div>
 
@@ -874,16 +1014,70 @@
         let isRunning = false;
         let topicSelected = false;
 
-        // Mobile Settings Toggle
-        $('#toggle-settings, #sidebar-overlay').click(function() {
-            $('#main-sidebar').toggleClass('open');
-            $('#sidebar-overlay').toggleClass('active');
+        // Mobile Bottom Sheet Logic
+        function openSheet() {
+            renderSheet();
+            $('#sheet-overlay').addClass('open');
+            $('#bottom-sheet').addClass('open');
+        }
+
+        function closeSheet() {
+            $('#sheet-overlay').removeClass('open');
+            $('#bottom-sheet').removeClass('open');
+        }
+
+        function renderSheet() {
+            const types = [
+                { key: 'diff', id: 'sheet-opts-diff', checkClass: 'diff-check' },
+                { key: 'cat', id: 'sheet-opts-cat', checkClass: 'cat-check' },
+                { key: 'goal', id: 'sheet-opts-goal', checkClass: 'goal-check' }
+            ];
+
+            types.forEach(type => {
+                const $container = $(`#${type.id}`);
+                $container.empty();
+                
+                $(`.${type.checkClass}`).each(function() {
+                    const value = $(this).val();
+                    const label = $(this).parent().text().trim();
+                    const isChecked = $(this).prop('checked');
+                    
+                    const $opt = $(`<div class="sheet-option ${isChecked ? 'selected' : ''}">${label}</div>`);
+                    $opt.click(function() {
+                        // For the sheet, we'll keep it as multi-select to match existing logic
+                        // but visually it looks like the mockup.
+                        const $check = $(`.${type.checkClass}[value="${value}"]`);
+                        $check.prop('checked', !$check.prop('checked')).trigger('change');
+                        renderSheet(); // Re-render to update checkmarks
+                    });
+                    $container.append($opt);
+                });
+            });
+        }
+
+        $('#open-sheet').click(openSheet);
+        $('#sheet-overlay').click(closeSheet);
+
+        function updateMobileFilterDisplay() {
+            const diffLabel = $('#val-diff').text();
+            const catLabel = $('#val-cat').text();
+            const goalLabel = $('#val-goal').text();
+            $('#mobile-filter-display').text(`${diffLabel} · ${catLabel} · ${goalLabel}`);
+        }
+
+        // Wrap existing filter change logic to also update mobile display
+        const originalFilterChange = $('.diff-check, .cat-check, .goal-check').change;
+        $('.diff-check, .cat-check, .goal-check').on('change', function() {
+            updateMobileFilterDisplay();
         });
 
-        // Close sidebar on navigation (mobile)
+        // Initial update
+        updateMobileFilterDisplay();
+
+        // Close sidebar on navigation (mobile) - updated for sheet if needed, 
+        // but resources link is in header now.
         $('.resources-link').click(function() {
-            $('#main-sidebar').removeClass('open');
-            $('#sidebar-overlay').removeClass('active');
+            closeSheet();
         });
 
         // Accordion Logic
