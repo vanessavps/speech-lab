@@ -1,0 +1,62 @@
+{
+  "PREP": {
+    "description": "Point · Reason · Example · Point",
+    "goals": ["structure","rhetoric"],
+    "steps": [
+      { "label": "Point",   "hint": "state your stance clearly",          "weight": 0.15 },
+      { "label": "Reason",  "hint": "explain why you believe this",       "weight": 0.35 },
+      { "label": "Example", "hint": "give a real case or personal story", "weight": 0.35 },
+      { "label": "Point",   "hint": "restate your conclusion",            "weight": 0.15 }
+    ]
+  },
+  "STAR": {
+    "description": "Situation · Task · Action · Result",
+    "goals": ["structure"],
+    "steps": [
+      { "label": "Situation", "hint": "set the scene briefly",             "weight": 0.15 },
+      { "label": "Task",      "hint": "what was your responsibility",      "weight": 0.10 },
+      { "label": "Action",    "hint": "what exactly did you do",           "weight": 0.50 },
+      { "label": "Result",    "hint": "what was the outcome, be specific", "weight": 0.25 }
+    ]
+  },
+  "What-So What-Now What": {
+    "description": "What · So What · Now What",
+    "goals": ["structure", "fluency"],
+    "steps": [
+      { "label": "What",     "hint": "describe what happened or the topic", "weight": 0.25 },
+      { "label": "So What",  "hint": "why does it matter",                  "weight": 0.40 },
+      { "label": "Now What", "hint": "what should happen next",             "weight": 0.35 }
+    ]
+  },
+  "Rule of Three": {
+    "description": "Three points, one idea",
+    "goals": ["fluency", "rhetoric"],
+    "steps": [
+      { "label": "Opening", "hint": "introduce your three points",     "weight": 0.15 },
+      { "label": "Point 1", "hint": "first point with brief example",  "weight": 0.25 },
+      { "label": "Point 2", "hint": "second point with brief example", "weight": 0.25 },
+      { "label": "Point 3", "hint": "third point with brief example",  "weight": 0.25 },
+      { "label": "Closing", "hint": "tie all three together",          "weight": 0.10 }
+    ]
+  },
+  "FORD": {
+    "description": "Fact · Opinion · Recommendation · Decision",
+    "goals": ["fluency"],
+    "steps": [
+      { "label": "Fact",           "hint": "state the facts only, no opinion yet", "weight": 0.20 },
+      { "label": "Opinion",        "hint": "what do you think about those facts",  "weight": 0.25 },
+      { "label": "Recommendation", "hint": "what should be done",                  "weight": 0.35 },
+      { "label": "Decision",       "hint": "commit to a clear next step",          "weight": 0.20 }
+    ]
+  },
+  "SEE-I": {
+    "description": "Statement · Elaboration · Example · Illustration",
+    "goals": ["rhetoric"],
+    "steps": [
+      { "label": "Statement",    "hint": "make your claim in one sentence",      "weight": 0.15 },
+      { "label": "Elaboration",  "hint": "unpack it, explain the reasoning",     "weight": 0.30 },
+      { "label": "Example",      "hint": "concrete real-world example",          "weight": 0.30 },
+      { "label": "Illustration", "hint": "analogy or image that makes it stick", "weight": 0.25 }
+    ]
+  }
+}

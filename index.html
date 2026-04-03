@@ -72,8 +72,22 @@
             flex-shrink: 0;
         }
 
+        .filter-warn {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: #ff6b6b;
+            margin: 0 0 10px 0;
+            display: none;
+        }
+
+        #framework-section {
+            padding-left: 14px;
+            border-left: 2px solid #7000ff33;
+            margin-left: 4px;
+        }
+
         .choice-trigger {
-            padding: 15px 0;
+            padding: 10px 0;
             cursor: pointer;
             display: flex;
             flex-direction: column;
@@ -138,9 +152,11 @@
 
         .choice-option:hover { color: var(--text); }
         .choice-option input { appearance: none; width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 2px; position: relative; cursor: pointer; }
+        .choice-option input[type="radio"] { border-radius: 50%; }
         .choice-option input:checked { background: #7000ff; border-color: #7000ff; }
         .choice-option input:checked::after { content: "✓"; color: #fff; font-size: 10px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-        .choice-option.active-text { color: #7000ff; font-weight: 600; }
+        .choice-option input[type="radio"]:checked::after { content: ""; width: 6px; height: 6px; background: #fff; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .choice-option:has(input:checked) { color: #7000ff; font-weight: 600; }
 
         /* Tooltip Style */
         .choice-option[data-tooltip] { position: relative; }
@@ -565,6 +581,12 @@
             margin-bottom: 24px;
         }
 
+        #sheet-group-framework {
+            padding-left: 14px;
+            border-left: 2px solid #7000ff33;
+            margin-left: 4px;
+        }
+
         .sheet-group-title {
             font-size: 0.6rem;
             font-weight: 600;
@@ -585,7 +607,7 @@
             font-family: 'Cormorant Garamond', serif;
             font-style: italic;
             font-size: 1.25rem;
-            color: var(--text);
+            color: var(--text-dim);
             padding: 12px 0;
             border-bottom: 1px solid #f0f0f5;
             cursor: pointer;
@@ -735,14 +757,21 @@
     <div class="sheet-group">
         <div class="sheet-group-title">Experience Level</div>
         <div class="sheet-options" id="sheet-opts-diff"></div>
+        <p class="filter-warn" id="sheet-warn-diff">Select at least one option</p>
     </div>
     <div class="sheet-group">
         <div class="sheet-group-title">Context</div>
         <div class="sheet-options" id="sheet-opts-cat"></div>
+        <p class="filter-warn" id="sheet-warn-cat">Select at least one option</p>
     </div>
     <div class="sheet-group">
         <div class="sheet-group-title">Training Goal</div>
         <div class="sheet-options" id="sheet-opts-goal"></div>
+        <p class="filter-warn" id="sheet-warn-goal">Select at least one option</p>
+    </div>
+    <div class="sheet-group" id="sheet-group-framework" style="display:none">
+        <div class="sheet-group-title">Framework</div>
+        <div class="sheet-options" id="sheet-opts-framework"></div>
     </div>
 </div>
 
@@ -762,10 +791,11 @@
                 <div class="choice-value"><span id="val-diff">Beginner</span> <span>▾</span></div>
             </div>
             <div class="choice-menu" id="menu-diff">
-                <label class="choice-option active-text"><input type="checkbox" class="diff-check" value="easy" checked> Beginner</label>
-                <label class="choice-option"><input type="checkbox" class="diff-check" value="medium"> Intermediate</label>
-                <label class="choice-option"><input type="checkbox" class="diff-check" value="hard"> Advanced</label>
+                <label class="choice-option active-text"><input type="radio" class="diff-check" name="diff" value="easy" checked> Beginner</label>
+                <label class="choice-option"><input type="radio" class="diff-check" name="diff" value="medium"> Intermediate</label>
+                <label class="choice-option"><input type="radio" class="diff-check" name="diff" value="hard"> Advanced</label>
             </div>
+            <p class="filter-warn" id="warn-diff">Select at least one option</p>
         </div>
 
         <div class="filter-section">
@@ -778,6 +808,7 @@
                 <label class="choice-option active-text"><input type="checkbox" class="cat-check" value="tech" checked> Tech</label>
                 <label class="choice-option active-text"><input type="checkbox" class="cat-check" value="corporate" checked> Corporate</label>
             </div>
+            <p class="filter-warn" id="warn-cat">Select at least one option</p>
         </div>
 
         <div class="filter-section">
@@ -786,10 +817,19 @@
                 <div class="choice-value"><span id="val-goal">Fluency</span> <span>▾</span></div>
             </div>
             <div class="choice-menu" id="menu-goal">
-                <label class="choice-option active-text" data-tooltip="Speak without pauses or filler words like 'um' and 'ah'."><input type="checkbox" class="goal-check" value="fluency" checked> Fluency</label>
-                <label class="choice-option" data-tooltip="Organize your thoughts into a clear Intro, Body, and Conclusion."><input type="checkbox" class="goal-check" value="structure"> Structure</label>
-                <label class="choice-option" data-tooltip="Use persuasive language and vivid metaphors to win the room."><input type="checkbox" class="goal-check" value="rhetoric"> Rhetoric</label>
+                <label class="choice-option active-text" data-tooltip="Speak without pauses or filler words like 'um' and 'ah'."><input type="radio" class="goal-check" name="goal" value="fluency" checked> Fluency</label>
+                <label class="choice-option" data-tooltip="Organize your thoughts into a clear Intro, Body, and Conclusion."><input type="radio" class="goal-check" name="goal" value="structure"> Structure</label>
+                <label class="choice-option" data-tooltip="Use persuasive language and vivid metaphors to win the room."><input type="radio" class="goal-check" name="goal" value="rhetoric"> Rhetoric</label>
             </div>
+            <p class="filter-warn" id="warn-goal">Select at least one option</p>
+        </div>
+
+        <div class="filter-section" id="framework-section" style="display:none">
+            <div class="choice-trigger" id="framework-trigger">
+                <span class="choice-label">Framework</span>
+                <div class="choice-value"><span id="val-framework">—</span> <span>▾</span></div>
+            </div>
+            <div class="choice-menu" id="menu-framework"></div>
         </div>
     </div>
 
@@ -835,6 +875,29 @@
         let topics = {};
         $.getJSON('topics.json', function(data) { topics = data; });
 
+        let frameworks = {};
+        $.getJSON('framework.json', function(data) {
+            frameworks = data;
+            updateFrameworkOptions($('.goal-check:checked').val());
+        });
+
+        function updateFrameworkOptions(goal) {
+            const options = Object.keys(frameworks).filter(name => frameworks[name].goals.includes(goal));
+            const $menu = $('#menu-framework');
+            $menu.empty();
+            const saved = (() => { try { return JSON.parse(localStorage.getItem('speechSessionFilters') || '{}').framework?.[0]; } catch(e) { return null; } })();
+            let defaultIndex = options.indexOf(saved);
+            if (defaultIndex === -1) defaultIndex = 0;
+            options.forEach((fw, i) => {
+                const checked = i === defaultIndex ? 'checked' : '';
+                const activeClass = i === defaultIndex ? 'active-text' : '';
+                $menu.append(`<label class="choice-option ${activeClass}"><input type="radio" class="framework-check" name="framework" value="${fw}" ${checked}> ${fw}</label>`);
+            });
+            $('#framework-section').toggle(options.length > 0);
+            $('#val-framework').text(options.length > 0 ? options[defaultIndex] : '—');
+            saveFilters();
+        }
+
         let savedTime = parseInt(localStorage.getItem('speechSessionTimer')) || 60;
         let timeLeft = savedTime;
         let timer = null;
@@ -856,30 +919,40 @@
 
         function renderSheet() {
             const types = [
-                { key: 'diff', id: 'sheet-opts-diff', checkClass: 'diff-check' },
-                { key: 'cat', id: 'sheet-opts-cat', checkClass: 'cat-check' },
-                { key: 'goal', id: 'sheet-opts-goal', checkClass: 'goal-check' }
+                { key: 'diff', id: 'sheet-opts-diff', checkClass: 'diff-check', single: true },
+                { key: 'cat', id: 'sheet-opts-cat', checkClass: 'cat-check', single: false },
+                { key: 'goal', id: 'sheet-opts-goal', checkClass: 'goal-check', single: true },
+                { key: 'framework', id: 'sheet-opts-framework', checkClass: 'framework-check', single: true }
             ];
+            const currentGoal = $('.goal-check:checked').val();
+            $('#sheet-group-framework').toggle(!!(currentGoal && frameworks[currentGoal]?.length > 0));
 
             types.forEach(type => {
                 const $container = $(`#${type.id}`);
                 $container.empty();
-                
+
                 $(`.${type.checkClass}`).each(function() {
                     const value = $(this).val();
                     const label = $(this).parent().text().trim();
                     const isChecked = $(this).prop('checked');
-                    
+
                     const $opt = $(`<div class="sheet-option ${isChecked ? 'selected' : ''}">${label}</div>`);
+
                     $opt.click(function() {
-                        // For the sheet, we'll keep it as multi-select to match existing logic
-                        // but visually it looks like the mockup.
                         const $check = $(`.${type.checkClass}[value="${value}"]`);
-                        $check.prop('checked', !$check.prop('checked')).trigger('change');
-                        renderSheet(); // Re-render to update checkmarks
+                        if (type.single) {
+                            $(`.${type.checkClass}`).prop('checked', false);
+                            $check.prop('checked', true).trigger('change');
+                        } else {
+                            $check.prop('checked', !$check.prop('checked')).trigger('change');
+                        }
+                        renderSheet();
                     });
                     $container.append($opt);
                 });
+
+                const noneChecked = $(`.${type.checkClass}:checked`).length === 0;
+                $(`#sheet-warn-${type.key}`).toggle(noneChecked);
             });
         }
 
@@ -914,23 +987,39 @@
             $trigger.toggleClass('active');
         });
 
+        function saveFilters() {
+            const selectedFilters = {
+                diff: $('.diff-check:checked').map(function() { return this.value; }).get(),
+                cat: $('.cat-check:checked').map(function() { return this.value; }).get(),
+                goal: $('.goal-check:checked').map(function() { return this.value; }).get(),
+                framework: $('.framework-check:checked').map(function() { return this.value; }).get()
+            };
+            localStorage.setItem('speechSessionFilters', JSON.stringify(selectedFilters));
+        }
+
+        // Framework change handler
+        $(document).on('change', '.framework-check', function() {
+            $('#val-framework').text($(this).val());
+            saveFilters();
+        });
+
         // Multi-Select Label Updates
         $('.diff-check, .cat-check, .goal-check').change(function() {
             const type = $(this).hasClass('diff-check') ? 'diff' : ($(this).hasClass('cat-check') ? 'cat' : 'goal');
             const checked = $(`.${type}-check:checked`);
-            let label = checked.length === 3 ? 'All' : (checked.length === 0 ? 'None' : checked.map(function() { return $(this).parent().text().trim(); }).get().join(", "));
+            const isSingle = $(`.${type}-check`).first().is('[type="radio"]');
+            let label = isSingle
+                ? (checked.length === 0 ? 'None' : checked.first().parent().text().trim())
+                : (checked.length === 3 ? 'All' : (checked.length === 0 ? 'None' : checked.map(function() { return $(this).parent().text().trim(); }).get().join(", ")));
             $(`#val-${type}`).text(label);
-            
+            $(`#warn-${type}`).toggle(checked.length === 0);
+
+            if (type === 'goal') updateFrameworkOptions(checked.val());
+
             // Sync mobile display after labels are updated
             updateMobileFilterDisplay();
 
-            // Save filters to localStorage
-            const selectedFilters = {
-                diff: $('.diff-check:checked').map(function() { return this.value; }).get(),
-                cat: $('.cat-check:checked').map(function() { return this.value; }).get(),
-                goal: $('.goal-check:checked').map(function() { return this.value; }).get()
-            };
-            localStorage.setItem('speechSessionFilters', JSON.stringify(selectedFilters));
+            saveFilters();
 
             // Auto-reload topic on filter change if not currently speaking
             if (!isRunning) {
@@ -956,7 +1045,10 @@
                 // Trigger label updates
                 ['diff', 'cat', 'goal'].forEach(type => {
                     const checked = $(`.${type}-check:checked`);
-                    let label = checked.length === 3 ? 'All' : (checked.length === 0 ? 'None' : checked.map(function() { return $(this).parent().text().trim(); }).get().join(", "));
+                    const isSingle = $(`.${type}-check`).first().is('[type="radio"]');
+                    let label = isSingle
+                        ? (checked.length === 0 ? 'None' : checked.first().parent().text().trim())
+                        : (checked.length === 3 ? 'All' : (checked.length === 0 ? 'None' : checked.map(function() { return $(this).parent().text().trim(); }).get().join(", ")));
                     $(`#val-${type}`).text(label);
                 });
             } catch (e) { console.error("Error loading filters", e); }
