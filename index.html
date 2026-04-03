@@ -253,6 +253,36 @@
             background: linear-gradient(90deg, transparent, #7000ff, #ff00ff, #00ffff, transparent);
         }
 
+        #step-display {
+            text-align: center;
+            min-height: 1.4em;
+            margin-bottom: 8px;
+            transition: opacity 0.4s;
+            text-transform: uppercase;
+            font-family: 'Quicksand', sans-serif;
+            font-style: normal;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #7000ff;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding-left: 10px;
+            position: relative;
+        }
+
+        #step-display:empty::before { display: none; }
+
+        #step-display::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: #7000ff;
+        }
+
+
         .bookmark-timer {
             display: flex;
             align-items: center;
@@ -846,6 +876,8 @@
             <button id="btn-reroll" class="active" title="Reroll Topic">↻</button>
         </div>
 
+        <div id="step-display"></div>
+
         <div class="bookmark-timer">
             <div style="position: relative; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
                 <button class="time-adjust" id="time-plus">+</button>
@@ -874,6 +906,34 @@
     $(document).ready(function() {
         let topics = {};
         $.getJSON('topics.json', function(data) { topics = data; });
+
+        let activeSteps = [];
+        let sessionTotalTime = 0;
+
+        function buildActiveSteps() {
+            const fw = $('.framework-check:checked').val();
+            if (!fw || !frameworks[fw]) { activeSteps = []; sessionTotalTime = 0; return; }
+            sessionTotalTime = timeLeft;
+            let cum = 0;
+            activeSteps = frameworks[fw].steps.map(step => {
+                cum += step.weight;
+                return { label: step.label, hint: step.hint, endFraction: cum };
+            });
+        }
+
+        function updateStepDisplay() {
+            if (!activeSteps.length || !sessionTotalTime) { $('#step-display').empty(); return; }
+            const elapsed = sessionTotalTime - timeLeft;
+            const fraction = elapsed / sessionTotalTime;
+            const step = activeSteps.find(s => fraction < s.endFraction) || activeSteps[activeSteps.length - 1];
+            $('#step-display').html(`<span class="step-label">${step.label}</span> · ${step.hint}`);
+        }
+
+        function clearStepDisplay() {
+            activeSteps = [];
+            sessionTotalTime = 0;
+            $('#step-display').empty();
+        }
 
         let frameworks = {};
         $.getJSON('framework.json', function(data) {
@@ -924,8 +984,7 @@
                 { key: 'goal', id: 'sheet-opts-goal', checkClass: 'goal-check', single: true },
                 { key: 'framework', id: 'sheet-opts-framework', checkClass: 'framework-check', single: true }
             ];
-            const currentGoal = $('.goal-check:checked').val();
-            $('#sheet-group-framework').toggle(!!(currentGoal && frameworks[currentGoal]?.length > 0));
+            $('#sheet-group-framework').toggle($('.framework-check').length > 0);
 
             types.forEach(type => {
                 const $container = $(`#${type.id}`);
@@ -1078,6 +1137,8 @@
 
             if (timeLeft < 15 && timeLeft > 0) $('#timer-display').addClass('warning');
             else $('#timer-display').removeClass('warning');
+
+            updateStepDisplay();
         }
 
         $('#time-plus').click(function() {
@@ -1148,7 +1209,9 @@
             if (!isRunning && ($btn.text() === 'Start Speaking')) {
                 if (winTimeout) { clearTimeout(winTimeout); winTimeout = null; }
                 $('.canvas').removeClass('bloom');
-                
+                buildActiveSteps();
+                updateStepDisplay();
+
                 $btn.text('Pause');
                 $('#btn-reroll').removeClass('active');
                 $('#timer-display').addClass('active');
@@ -1175,8 +1238,6 @@
                 isRunning = false;
                 $btn.text('Resume');
                 $('.time-adjust').prop('disabled', false);
-                $('#time-plus, #time-minus').removeClass('hidden');
-                $('#btn-reset-icon').removeClass('active');
                 return;
             }
 
@@ -1248,14 +1309,15 @@
             updateDisplay(true);
             $('#timer-display').removeClass('active');
 
-            $('.time-adjust').prop('disabled', false); 
+            $('.time-adjust').prop('disabled', false);
             $('#time-plus, #time-minus').removeClass('hidden'); $('#btn-reset-icon').removeClass('active');
             isRunning = false;
             topicSelected = true;
+            clearStepDisplay();
         }
 
         $('#btn-reset-icon').click(function() {
-            clearInterval(timer); 
+            clearInterval(timer);
             if (winTimeout) { clearTimeout(winTimeout); winTimeout = null; }
             isRunning = false;
             $('.canvas').removeClass('bloom');
@@ -1266,6 +1328,7 @@
             $('.time-adjust').prop('disabled', false);
             $('#time-plus, #time-minus').removeClass('hidden'); $(this).removeClass('active');
             $('#timer-display').removeClass('active');
+            clearStepDisplay();
         });
 
         updateDisplay();
