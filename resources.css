@@ -71,7 +71,7 @@ aside {
 }
 
 .toc-label {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Quicksand', sans-serif;
     font-size: 0.6rem;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -143,13 +143,11 @@ main {
 }
 
 header {
-    margin-bottom: 80px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .category-label {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Quicksand', sans-serif;
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 4px;
@@ -173,27 +171,91 @@ h1 {
     font-weight: 300;
 }
 
+.section-intro {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    max-width: 700px;
+    line-height: 1.8;
+}
+
 .method-section {
-    margin-bottom: 100px;
+    margin-bottom: 20px;
     scroll-margin-top: 60px;
 }
 
-h2 {
+.method-section:last-of-type {
+    border-bottom: none;
+}
+
+details {
+    padding: 20px 0;
+}
+
+summary {
+    list-style: none;
+    cursor: pointer;
+    outline: none;
+}
+
+summary::-webkit-details-marker {
+    display: none;
+}
+
+summary h2 {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 300;
-    margin-bottom: 30px;
+    margin-bottom: 0;
     display: flex;
     align-items: center;
     gap: 20px;
+    transition: color 0.3s;
 }
 
-h2::after {
+summary h2::before {
+    content: "+";
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #7000ff;
+    transition: transform 0.3s;
+    display: inline-block;
+    width: 20px;
+}
+
+details[open] summary h2::before {
+    content: "−";
+    transform: rotate(180deg);
+}
+
+summary h2:hover {
+    color: #7000ff;
+}
+
+summary h2::after {
     content: "";
     flex: 1;
     height: 1px;
     background: var(--holo);
-    opacity: 0.2;
+    opacity: 0.1;
+}
+
+.method-content {
+    padding: 30px 0 40px 40px;
+    animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.method-content > p {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    margin-bottom: 30px;
+    max-width: 800px;
 }
 
 .card-grid {
@@ -217,7 +279,7 @@ h2::after {
 }
 
 .method-card h3 {
-    font-family: 'Space Mono', monospace;
+    font-family: 'Quicksand', sans-serif;
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -323,5 +385,10 @@ h2::after {
         stroke-width: 2.5px;
         vertical-align: middle;
         display: inline-block;
+    }
+
+    .method-content {
+        padding: 0;
+        animation: slideDown 0.4s ease-out;
     }
 }
