@@ -1,7 +1,6 @@
 {
   "PREP": {
     "description": "Point · Reason · Example · Point",
-    "goals": ["structure","rhetoric"],
     "steps": [
       { "label": "Point",   "hint": "state your stance clearly",          "weight": 0.15 },
       { "label": "Reason",  "hint": "explain why you believe this",       "weight": 0.35 },
@@ -11,7 +10,6 @@
   },
   "STAR": {
     "description": "Situation · Task · Action · Result",
-    "goals": ["structure"],
     "steps": [
       { "label": "Situation", "hint": "set the scene briefly",             "weight": 0.15 },
       { "label": "Task",      "hint": "what was your responsibility",      "weight": 0.10 },
@@ -21,7 +19,6 @@
   },
   "What-So What-Now What": {
     "description": "What · So What · Now What",
-    "goals": ["structure", "fluency"],
     "steps": [
       { "label": "What",     "hint": "describe what happened or the topic", "weight": 0.25 },
       { "label": "So What",  "hint": "why does it matter",                  "weight": 0.40 },
@@ -30,7 +27,6 @@
   },
   "Rule of Three": {
     "description": "Three points, one idea",
-    "goals": ["fluency", "rhetoric"],
     "steps": [
       { "label": "Opening", "hint": "introduce your three points",     "weight": 0.15 },
       { "label": "Point 1", "hint": "first point with brief example",  "weight": 0.25 },
@@ -39,24 +35,23 @@
       { "label": "Closing", "hint": "tie all three together",          "weight": 0.10 }
     ]
   },
-  "FORD": {
-    "description": "Fact · Opinion · Recommendation · Decision",
-    "goals": ["fluency"],
+  "SCORE": {
+    "description": "Situation · Challenges · Options · Recommendation · Execution",
     "steps": [
-      { "label": "Fact",           "hint": "state the facts only, no opinion yet", "weight": 0.20 },
-      { "label": "Opinion",        "hint": "what do you think about those facts",  "weight": 0.25 },
-      { "label": "Recommendation", "hint": "what should be done",                  "weight": 0.35 },
-      { "label": "Decision",       "hint": "commit to a clear next step",          "weight": 0.20 }
+      { "label": "Situation",      "hint": "briefly set the context",               "weight": 0.15 },
+      { "label": "Challenges",     "hint": "identify the core problem or obstacle", "weight": 0.20 },
+      { "label": "Options",        "hint": "list potential solutions or paths",     "weight": 0.25 },
+      { "label": "Recommendation", "hint": "select the best path forward",          "weight": 0.25 },
+      { "label": "Execution",      "hint": "outline the next steps for success",    "weight": 0.15 }
     ]
   },
   "SEE-I": {
-    "description": "Statement · Elaboration · Example · Illustration",
-    "goals": ["rhetoric"],
+    "description": "State · Elaborate · Exemplify · Illustrate",
     "steps": [
-      { "label": "Statement",    "hint": "make your claim in one sentence",      "weight": 0.15 },
-      { "label": "Elaboration",  "hint": "unpack it, explain the reasoning",     "weight": 0.30 },
-      { "label": "Example",      "hint": "concrete real-world example",          "weight": 0.30 },
-      { "label": "Illustration", "hint": "analogy or image that makes it stick", "weight": 0.25 }
+      { "label": "State",      "hint": "make your claim in one sentence",      "weight": 0.15 },
+      { "label": "Elaborate",  "hint": "unpack it, explain the reasoning",     "weight": 0.30 },
+      { "label": "Exemplify",  "hint": "concrete real-world example",          "weight": 0.30 },
+      { "label": "Illustrate", "hint": "analogy or image that makes it stick", "weight": 0.25 }
     ]
   }
 }

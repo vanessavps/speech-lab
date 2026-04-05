@@ -6,7 +6,7 @@ $(document).ready(function() {
     let sessionTotalTime = 0;
 
     function buildActiveSteps() {
-        const fw = $('.framework-check:checked').val();
+        const fw = $('.framework-pill.selected').data('fw');
         if (!fw || !frameworks[fw]) { activeSteps = []; sessionTotalTime = 0; return; }
         sessionTotalTime = timeLeft;
         let cum = 0;
@@ -33,24 +33,33 @@ $(document).ready(function() {
     let frameworks = {};
     $.getJSON('framework.json', function(data) {
         frameworks = data;
-        updateFrameworkOptions($('.goal-check:checked').val());
+        renderFrameworkPills();
     });
 
-    function updateFrameworkOptions(goal) {
-        const options = Object.keys(frameworks).filter(name => frameworks[name].goals.includes(goal));
-        const $menu = $('#menu-framework');
-        $menu.empty();
-        const saved = (() => { try { return JSON.parse(localStorage.getItem('speechSessionFilters') || '{}').framework?.[0]; } catch(e) { return null; } })();
-        let defaultIndex = options.indexOf(saved);
-        if (defaultIndex === -1) defaultIndex = 0;
-        options.forEach((fw, i) => {
-            const checked = i === defaultIndex ? 'checked' : '';
-            const activeClass = i === defaultIndex ? 'active-text' : '';
-            $menu.append(`<label class="choice-option ${activeClass}"><input type="radio" class="framework-check" name="framework" value="${fw}" ${checked}> ${fw}</label>`);
+    function renderFrameworkPills() {
+        const options = (currentTopic && currentTopic.frameworks && currentTopic.frameworks.length)
+            ? currentTopic.frameworks.filter(name => frameworks[name])
+            : [];
+        const $pills = $('#framework-pills');
+        $pills.empty();
+        options.forEach(fw => {
+            const isSelected = false;
+            const desc = frameworks[fw].description || '';
+            const $pill = $(`<button class="framework-pill${isSelected ? ' selected' : ''}" data-fw="${fw}" data-tooltip="${desc}">${fw}</button>`);
+            $pill.click(function() {
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+                } else {
+                    $('.framework-pill').removeClass('selected');
+                    $(this).addClass('selected');
+                }
+                buildActiveSteps();
+                saveFilters();
+            });
+            $pills.append($pill);
         });
-        $('#framework-section').toggle(options.length > 0);
-        $('#val-framework').text(options.length > 0 ? options[defaultIndex] : '—');
-        saveFilters();
+        $('#framework-pills-wrap').toggle(options.length > 0);
+        lucide.createIcons();
     }
 
     let savedTime = parseInt(localStorage.getItem('speechSessionTimer')) || 60;
@@ -59,6 +68,7 @@ $(document).ready(function() {
     let winTimeout = null;
     let isRunning = false;
     let topicSelected = false;
+    let currentTopic = null;
 
     // Recording state
     let recordingEnabled = false;
@@ -98,11 +108,8 @@ $(document).ready(function() {
     function renderSheet() {
         const types = [
             { key: 'diff', id: 'sheet-opts-diff', checkClass: 'diff-check', single: true },
-            { key: 'cat', id: 'sheet-opts-cat', checkClass: 'cat-check', single: false },
-            { key: 'goal', id: 'sheet-opts-goal', checkClass: 'goal-check', single: true },
-            { key: 'framework', id: 'sheet-opts-framework', checkClass: 'framework-check', single: true }
+            { key: 'cat', id: 'sheet-opts-cat', checkClass: 'cat-check', single: false }
         ];
-        $('#sheet-group-framework').toggle($('.framework-check').length > 0);
 
         types.forEach(type => {
             const $container = $(`#${type.id}`);
@@ -139,11 +146,9 @@ $(document).ready(function() {
     function updateMobileFilterDisplay() {
         const diffLabel = $('#val-diff').text();
         const catLabel = $('#val-cat').text();
-        const goalLabel = $('#val-goal').text();
         $('#mobile-filter-display').html(`
             <span class="filter-meta-group"><i data-lucide="graduation-cap"></i> ${diffLabel}</span>
             <span class="filter-meta-group"><i data-lucide="tag"></i> ${catLabel}</span>
-            <span class="filter-meta-group"><i data-lucide="crosshair"></i> ${goalLabel}</span>
         `);
         lucide.createIcons();
     }
@@ -168,30 +173,21 @@ $(document).ready(function() {
         const selectedFilters = {
             diff: $('.diff-check:checked').map(function() { return this.value; }).get(),
             cat: $('.cat-check:checked').map(function() { return this.value; }).get(),
-            goal: $('.goal-check:checked').map(function() { return this.value; }).get(),
-            framework: $('.framework-check:checked').map(function() { return this.value; }).get()
+            framework: null
         };
         localStorage.setItem('speechSessionFilters', JSON.stringify(selectedFilters));
     }
 
-    // Framework change handler
-    $(document).on('change', '.framework-check', function() {
-        $('#val-framework').text($(this).val());
-        saveFilters();
-    });
-
     // Multi-Select Label Updates
-    $('.diff-check, .cat-check, .goal-check').change(function() {
-        const type = $(this).hasClass('diff-check') ? 'diff' : ($(this).hasClass('cat-check') ? 'cat' : 'goal');
+    $('.diff-check, .cat-check').change(function() {
+        const type = $(this).hasClass('diff-check') ? 'diff' : 'cat';
         const checked = $(`.${type}-check:checked`);
         const isSingle = $(`.${type}-check`).first().is('[type="radio"]');
         let label = isSingle
             ? (checked.length === 0 ? 'None' : checked.first().parent().text().trim())
-            : (checked.length === 3 ? 'All' : (checked.length === 0 ? 'None' : checked.map(function() { return $(this).parent().text().trim(); }).get().join(", ")));
+            : (checked.length === $(`.${type}-check`).length ? 'All' : (checked.length === 0 ? 'None' : checked.map(function() { return $(this).parent().text().trim(); }).get().join(", ")));
         $(`#val-${type}`).text(label);
         $(`#warn-${type}`).toggle(checked.length === 0);
-
-        if (type === 'goal') updateFrameworkOptions(checked.val());
 
         // Sync mobile display after labels are updated
         updateMobileFilterDisplay();
@@ -212,20 +208,19 @@ $(document).ready(function() {
             const filters = JSON.parse(saved);
             
             // Reset all to unchecked first
-            $('.diff-check, .cat-check, .goal-check').prop('checked', false);
+            $('.diff-check, .cat-check').prop('checked', false);
             
             // Apply saved states
             if (filters.diff) filters.diff.forEach(v => $(`.diff-check[value="${v}"]`).prop('checked', true));
             if (filters.cat) filters.cat.forEach(v => $(`.cat-check[value="${v}"]`).prop('checked', true));
-            if (filters.goal) filters.goal.forEach(v => $(`.goal-check[value="${v}"]`).prop('checked', true));
             
             // Trigger label updates
-            ['diff', 'cat', 'goal'].forEach(type => {
+            ['diff', 'cat'].forEach(type => {
                 const checked = $(`.${type}-check:checked`);
                 const isSingle = $(`.${type}-check`).first().is('[type="radio"]');
                 let label = isSingle
                     ? (checked.length === 0 ? 'None' : checked.first().parent().text().trim())
-                    : (checked.length === 3 ? 'All' : (checked.length === 0 ? 'None' : checked.map(function() { return $(this).parent().text().trim(); }).get().join(", ")));
+                    : (checked.length === $(`.${type}-check`).length ? 'All' : (checked.length === 0 ? 'None' : checked.map(function() { return $(this).parent().text().trim(); }).get().join(", ")));
                 $(`#val-${type}`).text(label);
             });
         } catch (e) { console.error("Error loading filters", e); }
@@ -274,14 +269,19 @@ $(document).ready(function() {
         } 
     });
 
+    function clearFrameworkSelection() {
+        $('.framework-pill').removeClass('selected');
+        clearStepDisplay();
+    }
+
     function getNewTopic(isWelcome = false) {
+        clearFrameworkSelection();
         const $text = $('#topic-text');
         const diffs = $('.diff-check:checked').map(function() { return this.value; }).get();
         const cats = $('.cat-check:checked').map(function() { return this.value; }).get();
-        const goals = $('.goal-check:checked').map(function() { return this.value; }).get();
         let pool = [];
         diffs.forEach(d => { if(topics[d]) pool = pool.concat(topics[d]); });
-        let filteredTopics = pool.filter(t => cats.includes(t.category) && goals.includes(t.goal));
+        let filteredTopics = pool.filter(t => cats.includes(t.category));
         
         if (filteredTopics.length === 0) { 
             $text.html("No matches."); 
@@ -289,8 +289,10 @@ $(document).ready(function() {
             return false; 
         }
         
-        const finalTopic = filteredTopics[Math.floor(Math.random() * filteredTopics.length)].text;
+        currentTopic = filteredTopics[Math.floor(Math.random() * filteredTopics.length)];
+        const finalTopic = currentTopic.text;
         topicSelected = true;
+        renderFrameworkPills();
         
         if (isWelcome) {
             $text.html(finalTopic).addClass('welcome-beat');
@@ -332,6 +334,7 @@ $(document).ready(function() {
 
             $btn.text('Pause');
             $('#btn-reroll').removeClass('active');
+            $('#framework-pills-wrap').hide();
             $('#timer-display').addClass('active');
             $('.time-adjust').prop('disabled', true);
             $('#time-plus, #time-minus').addClass('hidden');
@@ -444,7 +447,8 @@ $(document).ready(function() {
         getNewTopic(true);
         $('#btn-main').text('Start Speaking');
         $('#btn-reroll').addClass('active');
-        
+        $('#framework-pills-wrap').show();
+
         // Reset timer for next round
         timeLeft = parseInt(localStorage.getItem('speechSessionTimer')) || 60;
         updateDisplay(true);
@@ -475,6 +479,7 @@ $(document).ready(function() {
         $('.canvas').removeClass('bloom');
         $('#btn-main').text('Start Speaking');
         $('#btn-reroll').addClass('active');
+        $('#framework-pills-wrap').show();
         timeLeft = parseInt(localStorage.getItem('speechSessionTimer')) || 60;
         updateDisplay(true);
         $('.time-adjust').prop('disabled', false);
@@ -648,8 +653,7 @@ $(document).ready(function() {
         const dateStr = sessionDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
         const mins = Math.floor(sessionDuration / 60);
         const secs = sessionDuration % 60;
-        const goal = $('.goal-check:checked').parent().text().trim();
-        $('#report-meta-text').text(`${dateStr} • ${mins > 0 ? mins + 'm ' : ''}${secs}s • ${goal} GOAL`);
+        $('#report-meta-text').text(`${dateStr} • ${mins > 0 ? mins + 'm ' : ''}${secs}s`);
 
         // Audio Setup
         const $audio = $('#report-audio')[0];

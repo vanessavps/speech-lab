@@ -8,17 +8,19 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Quicksand:wght@300;500;600&family=Space+Mono&display=swap" rel="stylesheet">
-    <link href="/style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Quicksand:wght@300;500;600&display=swap" rel="stylesheet">
+    <link href="/homepage.css" rel="stylesheet">
 </head>
-<body>
+<body class="home-page">
 
 <div class="mobile-header">
     <a href="index.html" style="text-decoration: none;">
         <div class="logo" style="margin-bottom: 0; font-size: 1.4rem;">SpeechLab.</div>
     </a>
     <div style="display: flex; gap: 15px; align-items: center;">
-        <a href="resources.html" target="_blank" class="settings-toggle" style="text-decoration: underline; text-underline-offset: 4px; font-size: 0.65rem;">Resources</a>
+        <a href="resources.html" class="settings-toggle" style="text-decoration: underline; text-underline-offset: 4px; font-size: 0.65rem;">
+            <i data-lucide="book-open-text"></i>
+        </a>
     </div>
 </div>
 
@@ -27,8 +29,6 @@
         <span class="filter-meta-group"><i data-lucide="graduation-cap"></i> Beginner</span>
         <span class="filter-meta-divider">·</span>
         <span class="filter-meta-group"><i data-lucide="tag"></i> All</span>
-        <span class="filter-meta-divider">·</span>
-        <span class="filter-meta-group"><i data-lucide="crosshair"></i> Fluency</span>
     </span>
 </div>
 
@@ -36,26 +36,11 @@
 <div class="bottom-sheet" id="bottom-sheet">
     <div class="sheet-handle"></div>
     <div class="sheet-group">
-        <div class="sheet-group-title">Experience Level</div>
-        <div class="sheet-options" id="sheet-opts-diff"></div>
-        <p class="filter-warn" id="sheet-warn-diff">Select at least one option</p>
-    </div>
-    <div class="sheet-group">
         <div class="sheet-group-title">Context</div>
         <div class="sheet-options" id="sheet-opts-cat"></div>
         <p class="filter-warn" id="sheet-warn-cat">Select at least one option</p>
     </div>
-    <div class="sheet-group">
-        <div class="sheet-group-title">Training Goal</div>
-        <div class="sheet-options" id="sheet-opts-goal"></div>
-        <p class="filter-warn" id="sheet-warn-goal">Select at least one option</p>
     </div>
-    <div class="sheet-group" id="sheet-group-framework" style="display:none">
-        <div class="sheet-group-title">Framework</div>
-        <div class="sheet-options" id="sheet-opts-framework"></div>
-    </div>
-</div>
-
 <div class="overlay" id="sidebar-overlay"></div>
 
 <div class="holo-bg"></div>
@@ -85,36 +70,20 @@
                 <div class="choice-value"><span id="val-cat">All</span> <span>▾</span></div>
             </div>
             <div class="choice-menu" id="menu-cat">
-                <label class="choice-option active-text"><input type="checkbox" class="cat-check" value="general" checked> General</label>
                 <label class="choice-option active-text"><input type="checkbox" class="cat-check" value="tech" checked> Tech</label>
                 <label class="choice-option active-text"><input type="checkbox" class="cat-check" value="corporate" checked> Corporate</label>
+                <label class="choice-option active-text"><input type="checkbox" class="cat-check" value="culture" checked> Culture</label>
+                <label class="choice-option active-text"><input type="checkbox" class="cat-check" value="social" checked> Social</label>
+                <label class="choice-option active-text"><input type="checkbox" class="cat-check" value="science" checked> Science</label>
+                <label class="choice-option active-text"><input type="checkbox" class="cat-check" value="personal" checked> Personal</label>
+                <label class="choice-option active-text"><input type="checkbox" class="cat-check" value="education" checked> Education</label>
             </div>
             <p class="filter-warn" id="warn-cat">Select at least one option</p>
         </div>
 
-        <div class="filter-section">
-            <div class="choice-trigger" id="goal-trigger">
-                <span class="choice-label">Training Goal</span>
-                <div class="choice-value"><span id="val-goal">Fluency</span> <span>▾</span></div>
-            </div>
-            <div class="choice-menu" id="menu-goal">
-                <label class="choice-option active-text" data-tooltip="Speak without pauses or filler words like 'um' and 'ah'."><input type="radio" class="goal-check" name="goal" value="fluency" checked> Fluency</label>
-                <label class="choice-option" data-tooltip="Organize your thoughts into a clear Intro, Body, and Conclusion."><input type="radio" class="goal-check" name="goal" value="structure"> Structure</label>
-                <label class="choice-option" data-tooltip="Use persuasive language and vivid metaphors to win the room."><input type="radio" class="goal-check" name="goal" value="rhetoric"> Rhetoric</label>
-            </div>
-            <p class="filter-warn" id="warn-goal">Select at least one option</p>
-        </div>
-
-        <div class="filter-section" id="framework-section" style="display:none">
-            <div class="choice-trigger" id="framework-trigger">
-                <span class="choice-label">Framework</span>
-                <div class="choice-value"><span id="val-framework">—</span> <span>▾</span></div>
-            </div>
-            <div class="choice-menu" id="menu-framework"></div>
-        </div>
     </div>
 
-    <a href="resources.html" target="_blank" class="resources-link">Resources</a>
+    <a href="resources.html" class="resources-link"><i data-lucide="book-open-text"></i>Resources</a>
 </aside>
 
 <main>
@@ -125,6 +94,17 @@
         <div class="topic-wrap">
             <div id="topic-text">Loading stage...</div>
             <button id="btn-reroll" class="active" title="Reroll Topic">↻</button>
+        </div>
+
+        <div id="framework-pills-wrap" style="display:none">
+            <div class="framework-pills-header">
+                <span class="framework-pills-label">Framework</span>
+                <span class="framework-info-icon">
+                    <i data-lucide="info"></i>
+                    <span class="framework-info-tooltip">Select a framework to receive step-by-step hints while you speak. Optional.</span>
+                </span>
+            </div>
+            <div id="framework-pills"></div>
         </div>
 
         <div id="step-display"></div>
@@ -159,7 +139,7 @@
             <div class="report-header">
                 <div class="report-title">Session Report</div>
                 <div class="report-topic" id="report-topic-text">Topic Title</div>
-                <div class="report-meta" id="report-meta-text">Date • Goal • Time Limit</div>
+                <div class="report-meta" id="report-meta-text">Date • Time Limit</div>
             </div>
 
             <div class="report-grid">
