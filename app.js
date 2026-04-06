@@ -68,6 +68,7 @@ $(document).ready(function() {
     let winTimeout = null;
     let isRunning = false;
     let topicSelected = false;
+
     let currentTopic = null;
 
     // Recording state
@@ -86,6 +87,8 @@ $(document).ready(function() {
     // Session metadata for export
     let sessionDuration = 0;
     let sessionDate = null;
+    let sessionStartTimeLeft = 0;
+    let sessionTopicText = '';
 
     // Energy sampling state
     let audioContext = null;
@@ -108,7 +111,8 @@ $(document).ready(function() {
     function renderSheet() {
         const types = [
             { key: 'diff', id: 'sheet-opts-diff', checkClass: 'diff-check', single: true },
-            { key: 'cat', id: 'sheet-opts-cat', checkClass: 'cat-check', single: false }
+            { key: 'cat', id: 'sheet-opts-cat', checkClass: 'cat-check', single: false },
+            { key: 'goal', id: 'sheet-opts-goal', checkClass: 'goal-check', single: true }
         ];
 
         types.forEach(type => {
@@ -146,9 +150,11 @@ $(document).ready(function() {
     function updateMobileFilterDisplay() {
         const diffLabel = $('#val-diff').text();
         const catLabel = $('#val-cat').text();
+        const goalLabel = $('#val-goal').text();
         $('#mobile-filter-display').html(`
             <span class="filter-meta-group"><i data-lucide="graduation-cap"></i> ${diffLabel}</span>
             <span class="filter-meta-group"><i data-lucide="tag"></i> ${catLabel}</span>
+            <span class="filter-meta-group"><i data-lucide="crosshair"></i> ${goalLabel}</span>
         `);
         lucide.createIcons();
     }
@@ -173,14 +179,15 @@ $(document).ready(function() {
         const selectedFilters = {
             diff: $('.diff-check:checked').map(function() { return this.value; }).get(),
             cat: $('.cat-check:checked').map(function() { return this.value; }).get(),
+            goal: $('.goal-check:checked').map(function() { return this.value; }).get(),
             framework: null
         };
         localStorage.setItem('speechSessionFilters', JSON.stringify(selectedFilters));
     }
 
     // Multi-Select Label Updates
-    $('.diff-check, .cat-check').change(function() {
-        const type = $(this).hasClass('diff-check') ? 'diff' : 'cat';
+    $('.diff-check, .cat-check, .goal-check').change(function() {
+        const type = $(this).hasClass('diff-check') ? 'diff' : ($(this).hasClass('cat-check') ? 'cat' : 'goal');
         const checked = $(`.${type}-check:checked`);
         const isSingle = $(`.${type}-check`).first().is('[type="radio"]');
         let label = isSingle
@@ -208,14 +215,15 @@ $(document).ready(function() {
             const filters = JSON.parse(saved);
             
             // Reset all to unchecked first
-            $('.diff-check, .cat-check').prop('checked', false);
+            $('.diff-check, .cat-check, .goal-check').prop('checked', false);
             
             // Apply saved states
             if (filters.diff) filters.diff.forEach(v => $(`.diff-check[value="${v}"]`).prop('checked', true));
             if (filters.cat) filters.cat.forEach(v => $(`.cat-check[value="${v}"]`).prop('checked', true));
-            
+            if (filters.goal) filters.goal.forEach(v => $(`.goal-check[value="${v}"]`).prop('checked', true));
+
             // Trigger label updates
-            ['diff', 'cat'].forEach(type => {
+            ['diff', 'cat', 'goal'].forEach(type => {
                 const checked = $(`.${type}-check:checked`);
                 const isSingle = $(`.${type}-check`).first().is('[type="radio"]');
                 let label = isSingle
@@ -279,9 +287,10 @@ $(document).ready(function() {
         const $text = $('#topic-text');
         const diffs = $('.diff-check:checked').map(function() { return this.value; }).get();
         const cats = $('.cat-check:checked').map(function() { return this.value; }).get();
+        const goals = $('.goal-check:checked').map(function() { return this.value; }).get();
         let pool = [];
         diffs.forEach(d => { if(topics[d]) pool = pool.concat(topics[d]); });
-        let filteredTopics = pool.filter(t => cats.includes(t.category));
+        let filteredTopics = pool.filter(t => cats.includes(t.category) && goals.includes(t.goal));
         
         if (filteredTopics.length === 0) { 
             $text.html("No matches."); 
@@ -348,6 +357,8 @@ $(document).ready(function() {
             $('#record-toggle').addClass('hidden');
 
             isRunning = true;
+            sessionStartTimeLeft = timeLeft;
+            sessionTopicText = $('#topic-text').text().trim();
             timer = setInterval(() => {
                 if (timeLeft > 0) {
                     timeLeft--;
@@ -393,7 +404,7 @@ $(document).ready(function() {
     });
 
     async function triggerWin() {
-        sessionDuration = sessionTotalTime;
+        sessionDuration = sessionStartTimeLeft - timeLeft;
         sessionDate = new Date();
         
         stopSpeechDetection();
@@ -408,19 +419,19 @@ $(document).ready(function() {
         setTimeout(() => showPostSession(url), 1000);
 
         const phrases = [
-            "Aura +10",
-            "Maximum Aura Attained",
-            "Total Glow Up",
+            "Vocal Slay Unlocked",
+            "Peak Performer",
             "Main Character Energy",
-            "Radiant Performance",
-            "Elegance Level Up",
-            "Front Page Worthy",
-            "Voice Refined",
-            "Cognitive Flow State",
-            "Absolute Clarity",
+            "Absolutely Unstoppable",
+            "That's the Moment",
             "Speech Polished",
-            "Neural Pathways Ignited",
-            "Iconic Energy"
+            "Articulation Mastered",
+            "Unmatched Presence",
+            "Iconic Energy",
+            "Spoken Like a Pro",
+            "Absolutely Delivered",
+            "Flow State Activated",
+            "Masterclass Moment"
         ];
         const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
         const $winMsg = $('#win-message');
@@ -649,11 +660,12 @@ $(document).ready(function() {
         $('#main-sidebar, main > div > div.canvas').fadeOut(400);
         
         // Populate Report
-        $('#report-topic-text').text($('#topic-text').text().trim());
+        $('#report-topic-text').text(sessionTopicText);
         const dateStr = sessionDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
         const mins = Math.floor(sessionDuration / 60);
         const secs = sessionDuration % 60;
-        $('#report-meta-text').text(`${dateStr} • ${mins > 0 ? mins + 'm ' : ''}${secs}s`);
+        const goal = $('.goal-check:checked').parent().text().trim();
+        $('#report-meta-text').text(`${dateStr} • ${mins > 0 ? mins + 'm ' : ''}${secs}s • ${goal} GOAL`);
 
         // Audio Setup
         const $audio = $('#report-audio')[0];

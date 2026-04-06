@@ -27,8 +27,8 @@
 <div class="mobile-filter-meta" id="open-sheet">
     <span class="filter-meta-text" id="mobile-filter-display">
         <span class="filter-meta-group"><i data-lucide="graduation-cap"></i> Beginner</span>
-        <span class="filter-meta-divider">·</span>
         <span class="filter-meta-group"><i data-lucide="tag"></i> All</span>
+        <span class="filter-meta-group"><i data-lucide="crosshair"></i> Fluency</span>
     </span>
 </div>
 
@@ -36,11 +36,22 @@
 <div class="bottom-sheet" id="bottom-sheet">
     <div class="sheet-handle"></div>
     <div class="sheet-group">
+        <div class="sheet-group-title">Experience Level</div>
+        <div class="sheet-options" id="sheet-opts-diff"></div>
+        <p class="filter-warn" id="sheet-warn-diff">Select at least one option</p>
+    </div>
+    <div class="sheet-group">
         <div class="sheet-group-title">Context</div>
         <div class="sheet-options" id="sheet-opts-cat"></div>
         <p class="filter-warn" id="sheet-warn-cat">Select at least one option</p>
     </div>
+    <div class="sheet-group">
+        <div class="sheet-group-title">Training Goal</div>
+        <div class="sheet-options" id="sheet-opts-goal"></div>
+        <p class="filter-warn" id="sheet-warn-goal">Select at least one option</p>
     </div>
+</div>
+
 <div class="overlay" id="sidebar-overlay"></div>
 
 <div class="holo-bg"></div>
@@ -81,6 +92,18 @@
             <p class="filter-warn" id="warn-cat">Select at least one option</p>
         </div>
 
+        <div class="filter-section">
+            <div class="choice-trigger" id="goal-trigger">
+                <span class="choice-label">Training Goal</span>
+                <div class="choice-value"><span id="val-goal">Fluency</span> <span>▾</span></div>
+            </div>
+            <div class="choice-menu" id="menu-goal">
+                <label class="choice-option active-text" data-tooltip="Speak without pauses or filler words like 'um' and 'ah'."><input type="radio" class="goal-check" name="goal" value="fluency" checked> Fluency</label>
+                <label class="choice-option" data-tooltip="Organize your thoughts into a clear Intro, Body, and Conclusion."><input type="radio" class="goal-check" name="goal" value="structure"> Structure</label>
+                <label class="choice-option" data-tooltip="Use persuasive language and vivid metaphors to win the room."><input type="radio" class="goal-check" name="goal" value="rhetoric"> Rhetoric</label>
+            </div>
+            <p class="filter-warn" id="warn-goal">Select at least one option</p>
+        </div>
     </div>
 
     <a href="resources.html" class="resources-link"><i data-lucide="book-open-text"></i>Resources</a>
