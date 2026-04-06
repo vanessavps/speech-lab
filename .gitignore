@@ -12,3 +12,10 @@ gen/
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Dependencies
+node_modules/
+
+# Compiled CSS (build artifacts)
+homepage.css
+resources.css

@@ -1,0 +1,33 @@
+@use 'variables';
+@use 'base';
+@use 'sidebar';
+
+// Homepage-specific
+@use 'homepage/filters';
+@use 'homepage/canvas';
+@use 'homepage/report';
+@use 'homepage/mobile';
+
+body {
+    font-family: 'Quicksand', sans-serif;
+    color: var(--text);
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    background: #fff;
+    transition: background 0.8s variables.$easing;
+    overflow: hidden;
+}
+
+.holo-bg {
+    transition: all 0.8s variables.$easing;
+}
+
+aside {
+    overflow-y: auto;
+    margin-bottom: 30px;
+}
+
+.logo { margin-bottom: 30px; }
+
+.sidebar-nav { flex: 1; }

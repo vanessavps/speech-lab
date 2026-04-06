@@ -1,0 +1,30 @@
+@use 'variables';
+@use 'base';
+@use 'sidebar';
+
+// Resources-specific
+@use 'resources/toc';
+@use 'resources/content';
+@use 'resources/mobile';
+
+body {
+    font-family: 'Quicksand', sans-serif;
+    color: var(--text);
+    line-height: 1.6;
+    background: #fff;
+    min-height: 100vh;
+    display: flex;
+}
+
+.holo-bg::after {
+    content: "";
+    position: absolute;
+    top: -20%;
+    right: -20%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(circle, rgba(variables.$purple, 0.05) 0%, transparent 70%);
+    filter: blur(80px);
+}
+
+.logo { margin-bottom: 60px; }

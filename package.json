@@ -1,0 +1,11 @@
+{
+  "name": "speechlab",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "sass scss/homepage.scss:homepage.css scss/resources.scss:resources.css --no-source-map",
+    "watch": "sass --watch scss/homepage.scss:homepage.css scss/resources.scss:resources.css --no-source-map"
+  },
+  "devDependencies": {
+    "sass": "^1.77.0"
+  }
+}

@@ -1,0 +1,185 @@
+@use '../variables' as *;
+
+.filter-section {
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 10px;
+    flex-shrink: 0;
+}
+
+.filter-warn {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.6rem;
+    color: #ff6b6b;
+    margin: 0 0 10px 0;
+    display: none;
+}
+
+.choice-trigger {
+    padding: 10px 0;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+
+    &.active .choice-value span:last-child {
+        transform: rotate(180deg);
+    }
+}
+
+.choice-label {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    display: block;
+    margin-bottom: 8px;
+}
+
+.choice-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--text);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: color 0.3s;
+    width: 100%;
+
+    span:last-child {
+        font-family: 'Quicksand', sans-serif;
+        font-style: normal;
+        font-size: 1.2rem;
+        opacity: 0.3;
+        transition: transform 0.4s;
+    }
+}
+
+.choice-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s $easing, overflow 0s linear 0s;
+    padding-left: 5px;
+
+    &.open {
+        max-height: 300px;
+        overflow: visible;
+        padding-bottom: 20px;
+        transition: max-height 0.5s $easing, overflow 0s linear 0.5s;
+    }
+}
+
+.choice-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover { color: var(--text); }
+
+    &:has(input:checked) {
+        color: $purple;
+        font-weight: 600;
+    }
+
+    input {
+        appearance: none;
+        width: 14px;
+        height: 14px;
+        border: 1px solid var(--border);
+        border-radius: 2px;
+        position: relative;
+        cursor: pointer;
+
+        &[type="radio"] { border-radius: 50%; }
+
+        &:checked {
+            background: $purple;
+            border-color: $purple;
+
+            &::after {
+                content: "✓";
+                color: #fff;
+                font-size: 10px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        &[type="radio"]:checked::after {
+            content: "";
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    // Tooltip
+    &[data-tooltip] {
+        position: relative;
+
+        &::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 0;
+            top: calc(100% + 8px);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            color: #2c2c3d;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            width: 220px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s $easing;
+            z-index: 200;
+            line-height: 1.4;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba($purple, 0.1);
+            text-align: left;
+        }
+
+        &:hover::after {
+            opacity: 1;
+            transform: translateY(3px);
+        }
+    }
+}
+
+.resources-link {
+    margin-top: auto;
+    font-size: 0.7rem;
+    color: $purple;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-decoration: none;
+    text-underline-offset: 4px;
+    transition: color 0.3s, opacity 0.3s;
+    padding-bottom: 20px;
+    display: inline-block;
+    flex-shrink: 0;
+
+    svg {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2px;
+        vertical-align: middle;
+        display: inline-block;
+        margin-right: 7px;
+    }
+
+    &:hover { opacity: 0.7; }
+}

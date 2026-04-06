@@ -1,0 +1,17 @@
+// SCSS Variables
+$purple:   #7000ff;
+$pink:     #ff00ff;
+$cyan:     #00ffff;
+$text:     #1a1a1a;
+$text-dim: #888;
+$border:   rgba(0, 0, 0, 0.05);
+$easing:   cubic-bezier(0.19, 1, 0.22, 1);
+
+// CSS Custom Properties
+:root {
+    --text:     #{$text};
+    --text-dim: #{$text-dim};
+    --glass:    rgba(255, 255, 255, 0.7);
+    --holo:     linear-gradient(90deg, #{$purple}, #{$pink}, #{$cyan});
+    --border:   #{$border};
+}
