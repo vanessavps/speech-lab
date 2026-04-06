@@ -16,6 +16,9 @@ Thumbs.db
 # Dependencies
 node_modules/
 
+# Claude Code local settings
+.claude/
+
 # Compiled CSS (build artifacts)
 homepage.css
 resources.css
