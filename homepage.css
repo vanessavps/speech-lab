@@ -1026,12 +1026,12 @@ body.win-mode .holo-bg {
 }
 
 .btn-tally {
-    width: 80px;
-    height: 80px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     border: 1.5px solid var(--border);
     background: transparent;
-    font-size: 2rem;
+    font-size: 1.4rem;
     cursor: pointer;
     transition: all 0.2s;
     display: flex;

@@ -79,16 +79,14 @@ $(document).ready(function() {
     let recObjectUrl = null;
     let micStream = null;
 
-    // Speech detection state
-    const speechApiSupported = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
-    let speechRecognition = null;
-    let speechDetected = false;
-
     // Session metadata for export
     let sessionDuration = 0;
     let sessionDate = null;
     let sessionStartTimeLeft = 0;
     let sessionTopicText = '';
+    let sessionGoal = '';
+    let sessionFramework = '';
+    let sessionLevel = '';
 
     // Energy sampling state
     let audioContext = null;
@@ -352,13 +350,15 @@ $(document).ready(function() {
             if (recordingEnabled) {
                 startRecording();
                 $('#record-toggle span:last-child').text('Recording session');
-                startSpeechDetection();
             }
             $('#record-toggle').addClass('hidden');
 
             isRunning = true;
             sessionStartTimeLeft = timeLeft;
             sessionTopicText = $('#topic-text').text().trim();
+            sessionGoal = $('.goal-check:checked').parent().text().trim();
+            sessionFramework = $('.framework-pill.selected').text().trim();
+            sessionLevel = $('.diff-check:checked').parent().text().trim();
             timer = setInterval(() => {
                 if (timeLeft > 0) {
                     timeLeft--;
@@ -407,7 +407,6 @@ $(document).ready(function() {
         sessionDuration = sessionStartTimeLeft - timeLeft;
         sessionDate = new Date();
         
-        stopSpeechDetection();
         let url = null;
         if (recordingEnabled && mediaRecorder) {
             url = await stopRecording();
@@ -415,8 +414,8 @@ $(document).ready(function() {
             stopMicStream();
         }
         
-        // Always show report after 1s delay to allow "Aura" message to be seen
-        setTimeout(() => showPostSession(url), 1000);
+        // Always show report after 3s delay to allow "Aura" message to be seen
+        setTimeout(() => showPostSession(url), 2500);
 
         const phrases = [
             "Vocal Slay Unlocked",
@@ -454,8 +453,7 @@ $(document).ready(function() {
             }, 500);
         }, 3500);
 
-        // Auto-load next topic after win
-        getNewTopic(true);
+        // Auto-load the next topic after the win
         $('#btn-main').text('Start Speaking');
         $('#btn-reroll').addClass('active');
         $('#framework-pills-wrap').show();
@@ -482,7 +480,6 @@ $(document).ready(function() {
     $('#btn-reset-icon').click(function() {
         clearInterval(timer);
         if (winTimeout) { clearTimeout(winTimeout); winTimeout = null; }
-        stopSpeechDetection();
         stopMicStream();
         if (mediaRecorder && mediaRecorder.state !== 'inactive') { mediaRecorder.stop(); mediaRecorder = null; }
         clearRecordingBlob();
@@ -578,78 +575,6 @@ $(document).ready(function() {
         if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null; }
     }
 
-    function startSpeechDetection() {
-        if (!speechApiSupported) return;
-        speechDetected = false;
-        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-        speechRecognition = new SR();
-        speechRecognition.continuous = true;
-        speechRecognition.interimResults = true;
-        let recognizedWords = 0;
-        speechRecognition.onresult = (e) => {
-            for (let i = e.resultIndex; i < e.results.length; i++) {
-                const words = e.results[i][0].transcript.trim().split(/\s+/).filter(w => w.length > 0);
-                recognizedWords += words.length;
-            }
-            if (recognizedWords >= 5) speechDetected = true;
-        };
-        speechRecognition.onerror = () => {};
-        speechRecognition.onend = () => { if (isRunning) try { speechRecognition.start(); } catch(e) {} };
-        try { speechRecognition.start(); } catch(e) {}
-    }
-
-    function stopSpeechDetection() {
-        if (!speechRecognition) return;
-        speechRecognition.onend = null;
-        try { speechRecognition.stop(); } catch(e) {}
-        speechRecognition = null;
-    }
-
-    function generateObservations(samples) {
-        if (samples.length < 3) return [];
-        const obs = [];
-        const avg = samples.reduce((a, b) => a + b) / samples.length;
-
-        // Opening energy
-        const openSlice = samples.slice(0, Math.min(10, samples.length));
-        const openAvg = openSlice.reduce((a, b) => a + b) / openSlice.length;
-        obs.push(openAvg >= avg * 1.2
-            ? 'Strong opening — good energy in the first few seconds.'
-            : 'Quiet opening — try projecting more from the start.');
-
-        // Flat section
-        const threshold = avg * 0.6;
-        let flatRun = { start: 0, len: 0 };
-        let cur = { start: 0, len: 0 };
-        samples.forEach((s, i) => {
-            if (s < threshold) {
-                if (cur.len === 0) cur.start = i;
-                cur.len++;
-                if (cur.len > flatRun.len) flatRun = { ...cur };
-            } else {
-                cur = { start: 0, len: 0 };
-            }
-        });
-        if (flatRun.len > 5) {
-            const ts = (flatRun.start * 0.2).toFixed(0);
-            obs.push(`Energy dipped around ${ts}s — try emphasising key words there.`);
-        }
-
-        // Closing energy
-        const closeSlice = samples.slice(-Math.min(10, samples.length));
-        const closeAvg = closeSlice.reduce((a, b) => a + b) / closeSlice.length;
-        obs.push(closeAvg >= avg
-            ? 'Good energy toward the end — strong finish.'
-            : 'Energy dropped at the end — make sure your conclusion lands.');
-
-        // Overall variance
-        const variance = samples.reduce((sum, s) => sum + (s - avg) ** 2, 0) / samples.length;
-        if (variance < 200) {
-            obs.push('Your delivery was quite flat overall — aim for more peaks and valleys.');
-        }
-
-        return obs;
-    }
 
     // Analysis Report State
     let fillerTally = 0;
@@ -664,14 +589,13 @@ $(document).ready(function() {
         const dateStr = sessionDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
         const mins = Math.floor(sessionDuration / 60);
         const secs = sessionDuration % 60;
-        const goal = $('.goal-check:checked').parent().text().trim();
-        $('#report-meta-text').text(`${dateStr} • ${mins > 0 ? mins + 'm ' : ''}${secs}s • ${goal} GOAL`);
+        $('#report-meta-text').text(`${dateStr} • ${mins > 0 ? mins + 'm ' : ''}${secs}s • ${sessionLevel} • ${sessionGoal} ${sessionFramework ? ' • ' + sessionFramework : ''}`);
 
         // Audio Setup
         const $audio = $('#report-audio')[0];
         $audio.src = url || '';
         $audio.onended = () => {
-            $('#btn-play-report i').attr('data-lucide', 'play');
+            $('#btn-play-report').html('<i data-lucide="play"></i>');
             lucide.createIcons();
         };
 
@@ -679,27 +603,10 @@ $(document).ready(function() {
         $('.waveform-container').toggle(!!url);
         $('#btn-report-download').toggle(!!url);
         
-        const speechOk = !speechApiSupported || speechDetected;
-
         // Hide Filler card
         $('.insight-label').filter(function() {
             return $(this).text() === 'Filler Moments';
-        }).closest('.insight-card').toggle(!!url && speechOk);
-
-        // Hide Vocal Observations Panel (the entire column)
-        $('.insight-label').filter(function() {
-            return $(this).text() === 'Vocal Observations';
-        }).closest('.report-panel').toggle(!!url);
-
-        // Observations
-        if (url && speechOk) {
-            const obs = generateObservations(energySamples);
-            $('#report-observations').html(obs.map(o => `<div class="observation-item">${o}</div>`).join(''));
-        } else if (url && !speechOk) {
-            $('#report-observations').html('<div class="observation-item">No speech was detected in this recording. Make sure your microphone is working and that you spoke loud enough during the session.</div>');
-        } else {
-            $('#report-observations').empty();
-        }
+        }).closest('.insight-card').toggle(!!url);
         
         // Reset states
         fillerTally = 0;
@@ -784,20 +691,25 @@ $(document).ready(function() {
 
     $('#btn-play-report').click(function() {
         const $audio = $('#report-audio')[0];
-        const $icon = $(this).find('i');
+        const $btn = $(this);
         if ($audio.paused) {
             $audio.play();
-            $icon.attr('data-lucide', 'pause');
+            $btn.html('<i data-lucide="pause"></i>');
             renderReportWaveform(energySamples);
         } else {
             $audio.pause();
-            $icon.attr('data-lucide', 'play');
+            $btn.html('<i data-lucide="play"></i>');
         }
         lucide.createIcons();
     });
 
     $('#btn-tally-add').click(function() {
         fillerTally++;
+        $('#filler-tally-val').text(fillerTally);
+    });
+
+    $('#btn-tally-sub').click(function() {
+        if (fillerTally > 0) fillerTally--;
         $('#filler-tally-val').text(fillerTally);
     });
 
@@ -869,6 +781,9 @@ $(document).ready(function() {
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(9);
         doc.text(`${dateStr}  •  ${mins > 0 ? mins + 'm ' : ''}${secs}s Duration`, margin, y);
+        y += 5;
+        const goalLine = `Level: ${sessionLevel}  •  Goal: ${sessionGoal}${sessionFramework ? '  •  Framework: ' + sessionFramework : ''}`;
+        doc.text(goalLine, margin, y);
         y += 8;
 
         doc.setDrawColor(240, 240, 240);
@@ -925,21 +840,6 @@ $(document).ready(function() {
             y += imgH + 12;
         }
 
-        // Observations
-        const obsTexts = [];
-        $('.observation-item').each(function() { obsTexts.push($(this).text().trim()); });
-        if (audioRecorded && obsTexts.length) {
-            sectionLabel('VOCAL OBSERVATIONS');
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
-            obsTexts.forEach(text => {
-                const lines = doc.splitTextToSize('• ' + text, contentW);
-                checkBreak(lines.length * 5 + 2);
-                doc.text(lines, margin, y);
-                y += lines.length * 5 + 2;
-            });
-            y += 5;
-        }
 
         // Self-evaluation
         sectionLabel('SELF-EVALUATION');
@@ -951,7 +851,7 @@ $(document).ready(function() {
             y += 5;
         });
 
-        doc.save(`speechlab-report-${new Date().toISOString().slice(0,10)}.pdf`);
+        doc.save(`speechlab-report-${new Date().toISOString().slice(0,16).replace('T','-').replace(':','')}.pdf`);
     }
 
     function renderWaveform(samples) {
