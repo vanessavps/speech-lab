@@ -634,42 +634,46 @@ $(document).ready(function() {
         const ctx = canvas.getContext('2d');
         ctx.scale(dpr, dpr);
 
+        const smoothed = samples;
+
+        const gradient = ctx.createLinearGradient(0, 0, w, 0);
+        gradient.addColorStop(0,   '#7000ff');
+        gradient.addColorStop(0.5, '#ff00ff');
+        gradient.addColorStop(1,   '#00ffff');
+
         const draw = () => {
             ctx.clearRect(0, 0, w, h);
-            if (!samples.length) return;
+            if (!smoothed.length) return;
 
-            const avg = samples.reduce((a, b) => a + b) / samples.length;
-            const threshold = avg * 0.6;
-            const barW = Math.max(2, (w / samples.length) - 2);
-            const gap = w / samples.length;
+            const barW = Math.max(2, (w / smoothed.length) - 1.5);
+            const gap  = w / smoothed.length;
             const maxAmplitude = 255;
 
-            samples.forEach((s, i) => {
+            const $audio = $('#report-audio')[0];
+            const progress = $audio.duration ? $audio.currentTime / $audio.duration : 0;
+
+            smoothed.forEach((s, i) => {
                 const barH = Math.max(4, (s / maxAmplitude) * h);
                 const x = i * gap;
                 const y = (h - barH) / 2;
-                
-                // Highlight based on current playback
-                const $audio = $('#report-audio')[0];
-                const progress = $audio.currentTime / $audio.duration;
-                const isPlayed = (i / samples.length) <= progress;
+                const isPlayed = (i / smoothed.length) <= progress;
 
-                ctx.fillStyle = isPlayed ? '#7000ff' : 'rgba(112, 0, 255, 0.15)';
+                ctx.fillStyle = isPlayed ? gradient : 'rgba(112, 0, 255, 0.12)';
                 ctx.beginPath();
                 ctx.roundRect(x, y, barW, barH, 2);
                 ctx.fill();
             });
 
             // Scrubber line
-            const $audio = $('#report-audio')[0];
             if ($audio.duration) {
-                const progress = $audio.currentTime / $audio.duration;
-                ctx.strokeStyle = '#7000ff';
+                ctx.strokeStyle = '#fff';
                 ctx.lineWidth = 2;
+                ctx.globalAlpha = 0.7;
                 ctx.beginPath();
                 ctx.moveTo(progress * w, 0);
                 ctx.lineTo(progress * w, h);
                 ctx.stroke();
+                ctx.globalAlpha = 1;
             }
 
             if (!$audio.paused) requestAnimationFrame(draw);
@@ -734,9 +738,11 @@ $(document).ready(function() {
     $('#btn-next-session').click(function() {
         $('body').removeClass('report-open');
         $('#analysis-report').removeClass('show');
+        $('#main-sidebar').fadeIn(400);
         $('main > div > div.canvas').fadeIn(400);
 
         // Full Reset
+        $('#session-notes').val('');
         const $audio = $('#report-audio')[0];
         $audio.pause();
         $audio.src = '';
@@ -761,10 +767,10 @@ $(document).ready(function() {
         function sectionLabel(text) {
             checkBreak(10);
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(7);
+            doc.setFontSize(10);
             doc.setTextColor(136, 136, 136);
             doc.text(text, margin, y);
-            y += 5;
+            y += 7;
         }
 
         // Title
@@ -843,6 +849,9 @@ $(document).ready(function() {
 
         // Self-evaluation
         sectionLabel('SELF-EVALUATION');
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(26, 26, 26);
         $('.eval-item').each(function() {
             const checked = $(this).find('input').prop('checked');
             const label = $(this).find('.eval-label').text().trim();
@@ -850,6 +859,22 @@ $(document).ready(function() {
             doc.text((checked ? '[x] ' : '[ ] ') + label, margin, y);
             y += 5;
         });
+
+        // Session Notes
+        const notes = $('#session-notes').val().trim();
+        if (notes) {
+            y += 5;
+            sectionLabel('SESSION NOTES');
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.setTextColor(26, 26, 26);
+            const noteLines = doc.splitTextToSize(notes, contentW);
+            noteLines.forEach(line => {
+                checkBreak(6);
+                doc.text(line, margin, y);
+                y += 5;
+            });
+        }
 
         doc.save(`speechlab-report-${new Date().toISOString().slice(0,16).replace('T','-').replace(':','')}.pdf`);
     }
