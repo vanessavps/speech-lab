@@ -418,11 +418,11 @@ body.win-mode .holo-bg {
     z-index: 5;
 
     &.active  { color: $purple; opacity: 1; }
-    &.warning { color: #ff007f; }
+    &.warning { color: $pink; }
 }
 
 .timer.warning + .timer-svg .timer-bar {
-    stroke: #ff007f;
+    stroke: $pink;
     filter: drop-shadow(0 0 15px rgba(255, 0, 127, 0.6));
 }
 

@@ -1,0 +1,298 @@
+@use '../variables' as *;
+
+
+#splash-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    background: rgba(60, 10, 140, 0.72);
+    backdrop-filter: blur(14px);
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 1;
+    transition: opacity 0.5s $easing;
+
+    &.show {
+        display: flex;
+    }
+
+    &.fade-out {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+.splash-canvas {
+    width: 100%;
+    max-width: 720px;
+    background: #fff;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 48px 140px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255,255,255,0.06);
+}
+
+.splash-gradient-bar {
+    height: 5px;
+    background: var(--holo);
+}
+
+.splash-body {
+    padding: 3.5rem 4.5rem 3rem;
+
+    @media (max-width: 600px) {
+        padding: 2rem 1.75rem 2rem;
+    }
+}
+
+.splash-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 3.2rem;
+    background: var(--holo);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin: 0 0 5px;
+}
+
+.splash-subtitle {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: $text-dim;
+    letter-spacing: 0.04em;
+    margin: 0 0 2.25rem;
+}
+
+// Carousel
+.splash-carousel {
+    position: relative;
+    height: 290px;
+    margin-bottom: 2rem;
+}
+
+.splash-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    height: 100%;
+}
+
+.splash-icon-ring {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: rgba($pink, 0.07);
+    border: 1.5px solid rgba($pink, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+
+    i, svg {
+        width: 32px;
+        height: 32px;
+        color: $pink;
+        stroke-width: 1.75;
+    }
+}
+
+.splash-step {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: opacity 0.35s $easing, transform 0.35s $easing;
+
+    &.active {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    &.leaving {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    .step-num {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: $purple;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin: 0 0 7px;
+        opacity: 0.8;
+    }
+
+    strong {
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 600;
+        font-size: 1.45rem;
+        color: $text;
+        display: block;
+        margin: 0 0 10px;
+        line-height: 1.3;
+    }
+
+    p {
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 400;
+        font-size: 0.97rem;
+        color: $text-dim;
+        margin: 0;
+        line-height: 1.75;
+    }
+
+    a:not(.splash-resources-hint) {
+        color: $purple;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        font-weight: 500;
+
+        &:hover {
+            -webkit-text-fill-color: transparent;
+            background: var(--holo);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+    }
+}
+
+// Resources hint
+.splash-resources-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 10px 12px;
+    background: #f0e8ff;
+    border-radius: 8px;
+    border: 1px solid #c9a8f5;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s $easing;
+
+    &:hover { background: #e4d4ff; }
+
+    span:not(.splash-resources-pill) {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.75rem;
+        color: #4a0099;
+        font-weight: 500;
+    }
+
+    i, svg {
+        width: 12px;
+        height: 12px;
+        color: #4a0099;
+        flex-shrink: 0;
+    }
+}
+
+.splash-resources-pill {
+    font-size: 0.7rem;
+    background: $purple;
+    color: #fff;
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+}
+
+// Dot indicators
+.splash-dots {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 1.5rem;
+    align-items: center;
+}
+
+.splash-dot {
+    height: 5px;
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    transition: all 0.3s $easing;
+    border: none;
+    padding: 0;
+    width: 5px;
+
+    &.active {
+        width: 20px;
+        background: $pink;
+    }
+
+    &:hover:not(.active) {
+        background: rgba(0, 0, 0, 0.25);
+    }
+}
+
+// Button
+#btn-splash-next {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    background: #1a1525;
+    color: #fff;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s $easing;
+
+    &:hover { background: #2d2040; }
+
+    i, svg {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+.splash-skip {
+    text-align: center;
+    margin: 12px 0 0;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.78rem;
+    color: #bbb;
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover { color: $purple; }
+}
+
+@media (max-width: 1000px) {
+    .splash-canvas {
+        max-width: 100%;
+    }
+
+    .splash-icon-ring {
+        width: 60px;
+        height: 60px;
+    }
+
+    .splash-carousel {
+        height: 310px;
+    }
+}

@@ -895,6 +895,75 @@ $(document).ready(function() {
         // Deprecated
     });
 
+    // Splash screen carousel — show only on first visit
+    if (!localStorage.getItem('speechlab_visited')) {
+        $('#splash-screen').addClass('show');
+        lucide.createIcons();
+    }
+
+    let splashSlide = 0;
+    const splashTotal = $('.splash-step').length;
+
+    function closeSplash() {
+        $('#splash-screen').addClass('fade-out');
+        setTimeout(function () {
+            $('#splash-screen').removeClass('show fade-out');
+        }, 500);
+        localStorage.setItem('speechlab_visited', '1');
+    }
+
+    let splashTransitioning = false;
+
+    function updateSplashChrome(n) {
+        const isLast = n === splashTotal - 1;
+        $('.splash-dot').removeClass('active').eq(n).addClass('active');
+        $('#btn-splash-next').html(isLast
+            ? 'Get Started <i data-lucide="arrow-right"></i>'
+            : 'Next <i data-lucide="arrow-right"></i>');
+        $('#btn-splash-skip').toggle(!isLast);
+        lucide.createIcons();
+    }
+
+    function goToSlide(n) {
+        if (splashTransitioning || n === splashSlide) return;
+        splashTransitioning = true;
+
+        const $current = $('.splash-step.active');
+        const $next = $('.splash-step').eq(n);
+
+        $current.addClass('leaving');
+        updateSplashChrome(n);
+
+        setTimeout(function () {
+            $current.removeClass('active leaving');
+            $next.addClass('active');
+            splashSlide = n;
+            splashTransitioning = false;
+        }, 260);
+    }
+
+    $('#btn-show-splash, #btn-show-splash-mobile').on('click', function () {
+        goToSlide(0);
+        $('#splash-screen').addClass('show');
+        lucide.createIcons();
+    });
+
+    $('.splash-dot').on('click', function () {
+        goToSlide(parseInt($(this).data('slide')));
+    });
+
+    $('#btn-splash-next').on('click', function () {
+        if (splashSlide < splashTotal - 1) {
+            goToSlide(splashSlide + 1);
+        } else {
+            closeSplash();
+        }
+    });
+
+    $('#btn-splash-skip').on('click', function () {
+        closeSplash();
+    });
+
     updateDisplay();
     updateMobileFilterDisplay();
 });

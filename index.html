@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Quicksand:wght@300;500;600&family=Space+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Quicksand:wght@300;500;600&display=swap" rel="stylesheet">
     <link href="homepage.css" rel="stylesheet">
 </head>
 <body class="home-page">
@@ -21,6 +21,9 @@
         <a href="resources.html" class="settings-toggle" style="text-decoration: underline; text-underline-offset: 4px; font-size: 0.65rem;">
             <i data-lucide="book-open-text"></i>
         </a>
+        <button id="btn-show-splash-mobile" class="settings-toggle" style="background:none;border:none;padding:0;cursor:pointer;">
+            <i data-lucide="circle-help"></i>
+        </button>
     </div>
 </div>
 
@@ -106,7 +109,10 @@
         </div>
     </div>
 
-    <a href="resources.html" class="resources-link"><i data-lucide="book-open-text"></i>Resources</a>
+    <div class="sidebar-bottom">
+        <a href="resources.html" class="resources-link"><i data-lucide="book-open-text"></i>Resources</a>
+        <button id="btn-show-splash" data-tooltip="How it works"><i data-lucide="circle-help"></i></button>
+    </div>
 </aside>
 
 <main>
@@ -225,6 +231,77 @@
         </div>
     </div>
 </main>
+
+
+<div id="splash-screen">
+    <div class="splash-canvas">
+        <div class="splash-gradient-bar"></div>
+        <div class="splash-body">
+            <div class="splash-logo">SpeechLab.</div>
+            <p class="splash-subtitle">Your impromptu speaking trainer</p>
+
+            <div class="splash-carousel">
+                <ol class="splash-steps">
+                    <li class="splash-step active">
+                        <div class="splash-icon-ring">
+                            <i data-lucide="sliders-horizontal"></i>
+                        </div>
+                        <span class="step-num">Step 1 of 5</span>
+                        <strong>Set your filters</strong>
+                        <p>Choose your experience level, topic context, and training goal from the sidebar.</p>
+                    </li>
+                    <li class="splash-step">
+                        <div class="splash-icon-ring">
+                            <i data-lucide="shuffle"></i>
+                        </div>
+                        <span class="step-num">Step 2 of 5</span>
+                        <strong>Pick a topic</strong>
+                        <p>Browse curated prompts or let us surprise you. Every topic is a real-world scenario worth practising.</p>
+                    </li>
+                    <li class="splash-step">
+                        <div class="splash-icon-ring">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <span class="step-num">Step 3 of 5</span>
+                        <strong>Use a framework</strong>
+                        <p>Structure your response with proven techniques like PREP, STAR, or Rule of Three. Not sure which to use?</p>
+                        <a href="resources.html" class="splash-resources-hint">
+                            <span class="splash-resources-pill">New</span>
+                            <span>Explore PREP, STAR &amp; more in the Resources page</span>
+                            <i data-lucide="arrow-right"></i>
+                        </a>
+                    </li>
+                    <li class="splash-step">
+                        <div class="splash-icon-ring">
+                            <i data-lucide="timer"></i>
+                        </div>
+                        <span class="step-num">Step 4 of 5</span>
+                        <strong>Start speaking</strong>
+                        <p>Hit record and talk through your response. No scripts, no edits. Just you thinking on your feet.</p>
+                    </li>
+                    <li class="splash-step">
+                        <div class="splash-icon-ring">
+                            <i data-lucide="bar-chart-2"></i>
+                        </div>
+                        <span class="step-num">Step 5 of 5</span>
+                        <strong>You're ready</strong>
+                        <p>After each session, review your filler words, vocal energy, and structure score. Let's begin.</p>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="splash-dots">
+                <button class="splash-dot active" data-slide="0"></button>
+                <button class="splash-dot" data-slide="1"></button>
+                <button class="splash-dot" data-slide="2"></button>
+                <button class="splash-dot" data-slide="3"></button>
+                <button class="splash-dot" data-slide="4"></button>
+            </div>
+            <button id="btn-splash-next">Next <i data-lucide="arrow-right"></i></button>
+            <p class="splash-skip" id="btn-splash-skip">Skip intro</p>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

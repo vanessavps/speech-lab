@@ -31,12 +31,30 @@
     <nav class="toc-section">
         <span class="toc-label">Handbook Index</span>
         <div class="toc-list">
-            <a href="#prep" class="toc-link">PREP Method <span>›</span></a>
-            <a href="#star" class="toc-link">STAR Method <span>›</span></a>
-            <a href="#three" class="toc-link">Rule of Three <span>›</span></a>
-            <a href="#see-i" class="toc-link">SEE-I Method <span>›</span></a>
-            <a href="#score" class="toc-link">SCORE Framework <span>›</span></a>
-            <a href="#what" class="toc-link">What? So What? Now What? <span>›</span></a>
+            <div class="toc-item">
+                <a href="#prep" class="toc-link">PREP Method <i data-lucide="chevron-down" class="toc-chevron"></i></a>
+                <div class="toc-sub"><div><span>Point</span><span>Reason</span><span>Example</span><span>Point</span></div></div>
+            </div>
+            <div class="toc-item">
+                <a href="#star" class="toc-link">STAR Method <i data-lucide="chevron-down" class="toc-chevron"></i></a>
+                <div class="toc-sub"><div><span>Situation</span><span>Task</span><span>Action</span><span>Result</span></div></div>
+            </div>
+            <div class="toc-item">
+                <a href="#three" class="toc-link">Rule of Three <i data-lucide="chevron-down" class="toc-chevron"></i></a>
+                <div class="toc-sub"><div><span>Opening</span><span>The Points</span><span>Closing</span><span>Rhythm</span></div></div>
+            </div>
+            <div class="toc-item">
+                <a href="#see-i" class="toc-link">SEE-I Method <i data-lucide="chevron-down" class="toc-chevron"></i></a>
+                <div class="toc-sub"><div><span>State</span><span>Elaborate</span><span>Exemplify</span><span>Illustrate</span></div></div>
+            </div>
+            <div class="toc-item">
+                <a href="#score" class="toc-link">SCORE Framework <i data-lucide="chevron-down" class="toc-chevron"></i></a>
+                <div class="toc-sub"><div><span>Situation</span><span>Challenges</span><span>Options</span><span>Recommendation</span><span>Execution</span></div></div>
+            </div>
+            <div class="toc-item">
+                <a href="#what" class="toc-link">What? So What? Now What? <i data-lucide="chevron-down" class="toc-chevron"></i></a>
+                <div class="toc-sub"><div><span>What?</span><span>So What?</span><span>Now What?</span></div></div>
+            </div>
         </div>
     </nav>
 
@@ -234,8 +252,24 @@
 <script>
     lucide.createIcons();
     $(document).ready(function() {
-        // Close the sidebar on the link click
-        $('.toc-link, .back-link').click(function() {
+        $('.toc-link').on('click', function(e) {
+            e.preventDefault();
+            const $item = $(this).closest('.toc-item');
+            const isOpen = $item.hasClass('open');
+
+            $('.toc-item').removeClass('open');
+            if (!isOpen) {
+                $item.addClass('open');
+                const target = $(this).attr('href');
+                $(target)[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                $(target).find('details').prop('open', true);
+            }
+
+            $('#main-sidebar').removeClass('open');
+            $('#sidebar-overlay').removeClass('active');
+        });
+
+        $('.back-link').click(function() {
             $('#main-sidebar').removeClass('open');
             $('#sidebar-overlay').removeClass('active');
         });

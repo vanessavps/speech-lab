@@ -1,6 +1,6 @@
 {
   "PREP": {
-    "description": "Point · Reason · Example · Point",
+    "description": "State your main point, explain the reasoning behind it, provide a supporting example, and restate the point to drive it home",
     "steps": [
       { "label": "Point",   "hint": "state your stance clearly",          "weight": 0.15 },
       { "label": "Reason",  "hint": "explain why you believe this",       "weight": 0.35 },
@@ -9,7 +9,7 @@
     ]
   },
   "STAR": {
-    "description": "Situation · Task · Action · Result",
+    "description": "Describe a specific situation and your required task, explain the exact actions you took, and highlight the final result",
     "steps": [
       { "label": "Situation", "hint": "set the scene briefly",             "weight": 0.15 },
       { "label": "Task",      "hint": "what was your responsibility",      "weight": 0.10 },
@@ -18,7 +18,7 @@
     ]
   },
   "What? So What? Now What?": {
-    "description": "What? So What? Now What?",
+    "description": "Describe a situation, explain why it is significant or impactful, and conclude with the next logical steps to take",
     "steps": [
       { "label": "What",     "hint": "describe what happened or the topic", "weight": 0.25 },
       { "label": "So What",  "hint": "why does it matter",                  "weight": 0.40 },
@@ -26,7 +26,7 @@
     ]
   },
   "Rule of Three": {
-    "description": "Three points, one idea",
+    "description": "Introduce three distinct points or ideas and then tie them together into a single, cohesive message",
     "steps": [
       { "label": "Opening", "hint": "introduce your three points",     "weight": 0.15 },
       { "label": "Point 1", "hint": "first point with brief example",  "weight": 0.25 },
@@ -36,7 +36,7 @@
     ]
   },
   "SCORE": {
-    "description": "Situation · Challenges · Options · Recommendation · Execution",
+    "description": "Outline the current situation and its challenges, weigh your available options, and recommend a specific path for execution",
     "steps": [
       { "label": "Situation",      "hint": "briefly set the context",               "weight": 0.15 },
       { "label": "Challenges",     "hint": "identify the core problem or obstacle", "weight": 0.20 },
@@ -46,7 +46,7 @@
     ]
   },
   "SEE-I": {
-    "description": "State · Elaborate · Exemplify · Illustrate",
+    "description": "State a concept clearly, elaborate on its meaning, provide a real-world example, and use an analogy to illustrate the idea",
     "steps": [
       { "label": "State",      "hint": "make your claim in one sentence",      "weight": 0.15 },
       { "label": "Elaborate",  "hint": "unpack it, explain the reasoning",     "weight": 0.30 },
