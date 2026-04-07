@@ -17,8 +17,8 @@
       { "label": "Result",    "hint": "what was the outcome, be specific", "weight": 0.25 }
     ]
   },
-  "What-So What-Now What": {
-    "description": "What · So What · Now What",
+  "What? So What? Now What?": {
+    "description": "What? So What? Now What?",
     "steps": [
       { "label": "What",     "hint": "describe what happened or the topic", "weight": 0.25 },
       { "label": "So What",  "hint": "why does it matter",                  "weight": 0.40 },
