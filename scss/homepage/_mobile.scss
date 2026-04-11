@@ -151,7 +151,7 @@
 @media (max-width: 1000px) {
     body {
         flex-direction: column;
-        overflow: visible;
+        overflow: visible !important;
         height: auto;
         min-height: 100vh;
         min-height: 100dvh;
