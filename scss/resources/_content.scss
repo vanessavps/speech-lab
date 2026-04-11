@@ -1,5 +1,23 @@
 @use '../variables' as *;
 
+.desktop-brand {
+    text-align: center;
+
+    .logo {
+        font-size: 2.8rem;
+        margin-bottom: 4px;
+    }
+}
+
+.desktop-brand-subtitle {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    margin: 0;
+}
+
 main {
     flex: 1;
     overflow-y: auto;
