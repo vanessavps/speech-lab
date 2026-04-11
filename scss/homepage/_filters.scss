@@ -162,8 +162,9 @@
 .sidebar-bottom {
     margin-top: auto;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
     padding-bottom: 20px;
     flex-shrink: 0;
 }
@@ -194,42 +195,24 @@
 #btn-show-splash {
     background: none;
     border: none;
-    padding: 4px;
+    padding: 0;
     cursor: pointer;
-    color: $text-dim;
-    display: flex;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: $purple;
+    display: inline-flex;
     align-items: center;
-    transition: color 0.3s, opacity 0.3s;
-    position: relative;
+    transition: opacity 0.3s;
 
     svg {
-        width: 18px;
-        height: 18px;
-        stroke-width: 1.8px;
+        width: 20px;
+        height: 20px;
+        stroke-width: 2px;
+        margin-right: 7px;
     }
 
-    &:hover { color: $purple; }
-
-    &[data-tooltip]::after {
-        content: attr(data-tooltip);
-        position: absolute;
-        bottom: calc(100% + 8px);
-        right: 0;
-        background: rgba(255, 255, 255, 0.97);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba($purple, 0.12);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-        color: var(--text);
-        font-size: 0.7rem;
-        font-family: 'Quicksand', sans-serif;
-        font-weight: 500;
-        padding: 8px 12px;
-        border-radius: 8px;
-        white-space: nowrap;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.2s;
-    }
-
-    &[data-tooltip]:hover::after { opacity: 1; }
+    &:hover { opacity: 0.7; }
 }
