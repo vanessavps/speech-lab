@@ -260,20 +260,39 @@ $(document).ready(function() {
         updateStepDisplay();
     }
 
-    $('#time-plus').click(function() {
-        if (timeLeft < 1800) {
-            timeLeft += 10;
-            localStorage.setItem('speechSessionTimer', timeLeft);
-            updateDisplay(true); // snap=true to keep circle full
-        }
-    });
-    $('#time-minus').click(function() { 
-        if (timeLeft > 10) {
-            timeLeft -= 10;
-            localStorage.setItem('speechSessionTimer', timeLeft); 
-            updateDisplay(true); // snap=true to keep circle full
-        } 
-    });
+    let holdInterval = null;
+
+    function startHold(adjust) {
+        adjust(); // fire immediately on press
+        holdInterval = setInterval(adjust, 150);
+    }
+
+    function stopHold() {
+        clearInterval(holdInterval);
+        holdInterval = null;
+    }
+
+    $('#time-plus').on('mousedown touchstart', function(e) {
+        e.preventDefault();
+        startHold(function() {
+            if (timeLeft < 1800) {
+                timeLeft += 10;
+                localStorage.setItem('speechSessionTimer', timeLeft);
+                updateDisplay(true);
+            }
+        });
+    }).on('mouseup mouseleave touchend touchcancel', stopHold);
+
+    $('#time-minus').on('mousedown touchstart', function(e) {
+        e.preventDefault();
+        startHold(function() {
+            if (timeLeft > 10) {
+                timeLeft -= 10;
+                localStorage.setItem('speechSessionTimer', timeLeft);
+                updateDisplay(true);
+            }
+        });
+    }).on('mouseup mouseleave touchend touchcancel', stopHold);
 
     function clearFrameworkSelection() {
         $('.framework-pill').removeClass('selected');
