@@ -30,7 +30,8 @@
     font-size: 0.6rem;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: var(--text-dim);
+    color: $purple;
+    font-weight: 600;
     display: block;
     margin-bottom: 8px;
 }
@@ -75,7 +76,7 @@
     gap: 12px;
     padding: 10px 0;
     font-size: 0.85rem;
-    color: var(--text-dim);
+    color: var(--text);
     cursor: pointer;
     transition: color 0.2s;
 
@@ -214,13 +215,16 @@
         position: absolute;
         bottom: calc(100% + 8px);
         right: 0;
-        background: $text;
-        color: #fff;
+        background: rgba(255, 255, 255, 0.97);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba($purple, 0.12);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        color: var(--text);
         font-size: 0.7rem;
         font-family: 'Quicksand', sans-serif;
         font-weight: 500;
-        padding: 4px 10px;
-        border-radius: 6px;
+        padding: 8px 12px;
+        border-radius: 8px;
         white-space: nowrap;
         pointer-events: none;
         opacity: 0;

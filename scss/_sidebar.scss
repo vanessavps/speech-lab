@@ -24,7 +24,8 @@ aside {
     font-size: 0.55rem;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: var(--text-dim);
+    color: $purple;
+    font-weight: 600;
     display: block;
     margin-bottom: 6px;
 }

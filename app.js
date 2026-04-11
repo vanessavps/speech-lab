@@ -368,9 +368,10 @@ $(document).ready(function() {
             
             if (recordingEnabled) {
                 startRecording();
-                $('#record-toggle span:last-child').text('Recording session');
+                $('#record-toggle span:nth-child(2)').text('Recording session');
+            } else {
+                $('#record-toggle').addClass('hidden');
             }
-            $('#record-toggle').addClass('hidden');
 
             isRunning = true;
             sessionStartTimeLeft = timeLeft;
@@ -487,7 +488,7 @@ $(document).ready(function() {
         isRunning = false;
         topicSelected = true;
         clearStepDisplay();
-        $('#record-toggle').removeClass('hidden').find('span:last-child').text('Record session');
+        $('#record-toggle').removeClass('hidden').find('span:nth-child(2)').text('Record session');
     }
 
     function clearRecordingBlob() {
@@ -513,7 +514,8 @@ $(document).ready(function() {
         $('#time-plus, #time-minus').removeClass('hidden'); $(this).removeClass('active');
         $('#timer-display').removeClass('active');
         clearStepDisplay();
-        $('#record-toggle').removeClass('hidden').find('span:last-child').text('Record session');
+        recordingEnabled = false;
+        $('#record-toggle').removeClass('hidden active').find('span:nth-child(2)').text('Record session');
     });
 
     // --- Recording ---
@@ -535,6 +537,7 @@ $(document).ready(function() {
             recordingEnabled = false;
         }
         $(this).toggleClass('active', recordingEnabled);
+        $(this).find('span:nth-child(2)').text(recordingEnabled ? 'Recording session' : 'Record session');
     });
 
     async function startRecording() {

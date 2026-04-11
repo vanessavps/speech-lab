@@ -12,6 +12,12 @@
     animation: fadeIn 0.6s $easing;
 
     &.show { display: flex; }
+
+    .desktop-brand {
+        max-width: 1100px;
+        width: 100%;
+        margin: 0 auto 40px;
+    }
 }
 
 @keyframes fadeIn {
@@ -48,7 +54,7 @@
 .report-meta {
     font-family: 'Quicksand', sans-serif;
     font-size: 0.75rem;
-    color: var(--text-dim);
+    color: var(--text);
     font-weight: 500;
     display: flex;
     gap: 20px;
@@ -114,11 +120,11 @@
 
 .insight-label {
     font-family: 'Quicksand', sans-serif;
-    font-size: 0.65rem;
+    font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: var(--text-dim);
-    font-weight: 700;
+    color: $purple;
+    font-weight: 600;
     margin-bottom: 20px;
     display: block;
 }
@@ -149,7 +155,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-dim);
+    color: var(--text);
 
     &:hover  { border-color: $purple; color: $purple; background: rgba($purple, 0.05); }
     &:active { transform: scale(0.92); }
@@ -322,7 +328,7 @@
     text-transform: uppercase;
     letter-spacing: 1.5px;
     font-weight: 700;
-    color: var(--text-dim);
+    color: var(--text);
     cursor: pointer;
     display: flex;
     align-items: center;

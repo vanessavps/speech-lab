@@ -4,8 +4,17 @@
     padding: 0;
 }
 
+html {
+    background: #fff;
+}
+
 @media (min-width: 1001px) {
     html { font-size: 18px; }
+}
+
+.logo-link {
+    text-decoration: none;
+    color: inherit;
 }
 
 .holo-bg {

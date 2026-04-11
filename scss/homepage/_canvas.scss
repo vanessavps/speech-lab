@@ -124,17 +124,51 @@ body.win-mode .holo-bg {
     right: 0;
     background: none;
     border: none;
-    color: var(--text-dim);
+    color: var(--text);
     font-size: 1.2rem;
     cursor: pointer;
-    opacity: 0.3;
     transition: all 0.4s $easing;
     padding: 10px;
     z-index: 100;
 
-    &:hover { opacity: 1; color: $purple; }
+    &:hover .reroll-icon { color: $purple; }
     &.active { display: block; }
-    &.spinning { animation: spinOnce 0.6s $easing; }
+
+    &.spinning .reroll-icon {
+        animation: spinOnce 0.6s $easing;
+    }
+
+    .reroll-icon {
+        display: inline-block;
+        color: var(--text);
+    }
+
+    &[data-tooltip]::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        color: #2c2c3d;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 0.7rem;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 500;
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        transition: all 0.3s $easing;
+        z-index: 200;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba($purple, 0.1);
+    }
+
+    &[data-tooltip]:hover::after {
+        opacity: 1;
+        transform: translateY(3px);
+    }
 }
 
 @keyframes spinOnce {
@@ -212,7 +246,8 @@ body.win-mode .holo-bg {
     font-size: 0.55rem;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: var(--text-dim);
+    color: $purple;
+    font-weight: 600;
 }
 
 .framework-info-icon {
@@ -224,7 +259,7 @@ body.win-mode .holo-bg {
     opacity: 0.45;
     transition: opacity 0.2s;
 
-    i { width: 12px; height: 12px; }
+    svg { width: 20px; height: 20px; }
 
     &:hover { opacity: 1; }
 
@@ -245,6 +280,8 @@ body.win-mode .holo-bg {
     padding: 8px 12px;
     font-family: 'Quicksand', sans-serif;
     font-size: 0.7rem;
+    text-transform: none;
+    letter-spacing: normal;
     color: var(--text);
     white-space: nowrap;
     pointer-events: none;
@@ -269,7 +306,7 @@ body.win-mode .holo-bg {
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 20px;
     background: transparent;
-    color: var(--text-dim);
+    color: $purple;
     cursor: pointer;
     transition: all 0.2s $easing;
     white-space: nowrap;
@@ -359,10 +396,9 @@ body.win-mode .holo-bg {
 .time-adjust {
     background: transparent;
     border: none;
-    color: var(--text-dim);
+    color: var(--text);
     font-size: 1.6rem;
     cursor: pointer;
-    opacity: 0.4;
     line-height: 1;
     padding: 0;
     width: 30px;
@@ -437,43 +473,43 @@ body.win-mode .holo-bg {
     z-index: 5;
 
     &.active  { color: $purple; opacity: 1; }
-    &.warning { color: $pink; }
+    &.active.warning { color: $pink; }
 }
 
-.timer.warning + .timer-svg .timer-bar {
+.timer.active.warning + .timer-svg .timer-bar {
     stroke: $pink;
     filter: drop-shadow(0 0 15px rgba(255, 0, 127, 0.6));
 }
 
 // Buttons
 
-.action-bar {
-    position: absolute;
-    bottom: 40px;
-    right: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 10px;
+#btn-main {
+    margin-top: 20px;
 }
 
 .record-toggle {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    margin-bottom: 10px;
     cursor: pointer;
     font-family: 'Quicksand', sans-serif;
     font-size: 0.6rem;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: var(--text-dim);
+    color: var(--text);
+    font-weight: 600;
     transition: color 0.2s;
     user-select: none;
-    opacity: 0.6;
 
-    &:hover   { opacity: 1; }
+    &:hover:not(.active) {
+        color: #e03030;
+        opacity: 1;
+        .record-dot { background: rgba(224, 48, 48, 0.35); }
+    }
     &.active  { color: #e03030; opacity: 1; }
-    &.disabled { pointer-events: none; opacity: 0.4; }
+    &.disabled { pointer-events: none;}
     &.hidden  { display: none; }
 }
 
@@ -497,13 +533,13 @@ body.win-mode .holo-bg {
     text-transform: uppercase;
     letter-spacing: 2px;
     font-weight: 600;
-    padding: 14px 0;
+    padding: 14px 6px;
     background: $text;
     color: #fff;
     border: 1.5px solid transparent;
     cursor: pointer;
     transition: all 0.3s;
-    width: 200px;
+    width: 220px;
     text-align: center;
 
     &:hover   { border-image: linear-gradient(90deg, $purple, $pink, $cyan) 1; box-shadow: 0 0 20px rgba($purple, 0.3); }
