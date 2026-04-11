@@ -39,10 +39,51 @@
 }
 
 .splash-body {
+    position: relative;
     padding: 3.5rem 4.5rem 3rem;
 
     @media (max-width: 600px) {
-        padding: 2rem 1.75rem 2rem;
+        padding: 2rem 3rem 2rem;
+    }
+}
+
+// Nav arrows
+.splash-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    color: $purple;
+    cursor: pointer;
+    z-index: 10;
+    transition: opacity 0.2s $easing;
+    padding: 0;
+
+    i, svg {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2.5;
+    }
+
+    &.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    &--prev { left: 10px; }
+    &--next { right: 10px; }
+
+    @media (max-width: 600px) {
+        i, svg {
+            width: 18px;
+            height: 18px;
+        }
     }
 }
 
@@ -242,37 +283,9 @@
     }
 }
 
-// Button
-#btn-splash-next {
-    width: 100%;
-    padding: 15px;
-    border-radius: 12px;
-    background: #1a1525;
-    color: #fff;
-    font-family: 'Quicksand', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background 0.2s $easing;
-
-    &:hover { background: #2d2040; }
-
-    i, svg {
-        width: 14px;
-        height: 14px;
-    }
-}
-
 .splash-skip {
-    text-align: center;
-    margin: 12px 0 0;
+    text-align: right;
+    margin: 0;
     font-family: 'Quicksand', sans-serif;
     font-size: 0.78rem;
     color: #bbb;

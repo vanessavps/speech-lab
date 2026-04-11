@@ -903,6 +903,7 @@ $(document).ready(function() {
 
     let splashSlide = 0;
     const splashTotal = $('.splash-step').length;
+    $('#btn-splash-prev').addClass('hidden');
 
     function closeSplash() {
         $('#splash-screen').addClass('fade-out');
@@ -917,10 +918,9 @@ $(document).ready(function() {
     function updateSplashChrome(n) {
         const isLast = n === splashTotal - 1;
         $('.splash-dot').removeClass('active').eq(n).addClass('active');
-        $('#btn-splash-next').html(isLast
-            ? 'Get Started <i data-lucide="arrow-right"></i>'
-            : 'Next <i data-lucide="arrow-right"></i>');
-        $('#btn-splash-skip').toggle(!isLast);
+        $('#btn-splash-skip').text(isLast ? 'Get Started' : 'Skip intro');
+        $('#btn-splash-prev').toggleClass('hidden', n === 0);
+        $('#btn-splash-arrow-next').toggleClass('hidden', isLast);
         lucide.createIcons();
     }
 
@@ -952,17 +952,40 @@ $(document).ready(function() {
         goToSlide(parseInt($(this).data('slide')));
     });
 
-    $('#btn-splash-next').on('click', function () {
-        if (splashSlide < splashTotal - 1) {
-            goToSlide(splashSlide + 1);
-        } else {
-            closeSplash();
-        }
-    });
-
     $('#btn-splash-skip').on('click', function () {
         closeSplash();
     });
+
+    $('#btn-splash-prev').on('click', function () {
+        if (splashSlide > 0) goToSlide(splashSlide - 1);
+    });
+
+    $('#btn-splash-arrow-next').on('click', function () {
+        if (splashSlide < splashTotal - 1) goToSlide(splashSlide + 1);
+    });
+
+    // Swipe left/right to navigate splash steps on mobile
+    (function () {
+        var touchStartX = 0;
+        var touchStartY = 0;
+        var SWIPE_THRESHOLD = 40;
+
+        $('#splash-screen')[0].addEventListener('touchstart', function (e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        $('#splash-screen')[0].addEventListener('touchend', function (e) {
+            var dx = e.changedTouches[0].clientX - touchStartX;
+            var dy = e.changedTouches[0].clientY - touchStartY;
+            if (Math.abs(dx) < SWIPE_THRESHOLD || Math.abs(dx) < Math.abs(dy)) return;
+            if (dx < 0 && splashSlide < splashTotal - 1) {
+                goToSlide(splashSlide + 1);
+            } else if (dx > 0 && splashSlide > 0) {
+                goToSlide(splashSlide - 1);
+            }
+        }, { passive: true });
+    }());
 
     updateDisplay();
     updateMobileFilterDisplay();
