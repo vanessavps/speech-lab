@@ -145,6 +145,44 @@ $(document).ready(function() {
     $('#open-sheet').click(openSheet);
     $('#sheet-overlay').click(closeSheet);
 
+    // Swipe-down to close bottom sheet
+    (function setupSheetSwipe() {
+        const sheet = document.getElementById('bottom-sheet');
+        if (!sheet) return;
+
+        let startY = 0;
+        let currentY = 0;
+        let dragging = false;
+
+        sheet.addEventListener('touchstart', (e) => {
+            if (sheet.scrollTop > 0) return;
+            startY = e.touches[0].clientY;
+            currentY = startY;
+            dragging = true;
+            sheet.style.transition = 'none';
+        }, { passive: true });
+
+        sheet.addEventListener('touchmove', (e) => {
+            if (!dragging) return;
+            currentY = e.touches[0].clientY;
+            const delta = currentY - startY;
+            if (delta < 0) {
+                sheet.style.transform = '';
+                return;
+            }
+            sheet.style.transform = `translateY(${delta}px)`;
+        }, { passive: true });
+
+        sheet.addEventListener('touchend', () => {
+            if (!dragging) return;
+            dragging = false;
+            sheet.style.transition = '';
+            sheet.style.transform = '';
+            const delta = currentY - startY;
+            if (delta > 100) closeSheet();
+        });
+    })();
+
     function updateMobileFilterDisplay() {
         const diffLabel = $('#val-diff').text();
         const catLabel = $('#val-cat').text();
