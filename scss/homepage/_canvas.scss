@@ -165,9 +165,11 @@ body.win-mode .holo-bg {
         border: 1px solid rgba($purple, 0.1);
     }
 
-    &[data-tooltip]:hover::after {
-        opacity: 1;
-        transform: translateY(3px);
+    @media (hover: hover) {
+        &[data-tooltip]:hover::after {
+            opacity: 1;
+            transform: translateY(3px);
+        }
     }
 }
 
@@ -503,10 +505,12 @@ body.win-mode .holo-bg {
     transition: color 0.2s;
     user-select: none;
 
-    &:hover:not(.active) {
-        color: #e03030;
-        opacity: 1;
-        .record-dot { background: rgba(224, 48, 48, 0.35); }
+    @media (hover: hover) {
+        &:hover:not(.active) {
+            color: #e03030;
+            opacity: 1;
+            .record-dot { background: rgba(224, 48, 48, 0.35); }
+        }
     }
     &.active  { color: #e03030; opacity: 1; }
     &.disabled { pointer-events: none;}
