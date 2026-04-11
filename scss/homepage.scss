@@ -30,3 +30,19 @@ aside {
 }
 
 .sidebar-nav { flex: 1; }
+
+@media (min-width: 1001px) {
+    .choice-label          { font-size: 0.72rem; }
+    .choice-option         { font-size: 1rem; }
+    .choice-value          { font-size: 1.4rem; }
+    .sidebar-cta-eyebrow   { font-size: 0.65rem; }
+    .sidebar-cta-text      { font-size: 1.7rem; }
+    .resources-link        { font-size: 0.8rem; }
+    .framework-pills-label { font-size: 0.65rem; }
+    .framework-pill        { font-size: 0.65rem; }
+    .desktop-brand-subtitle { font-size: 0.75rem; }
+    .record-toggle         { font-size: 0.72rem; }
+    .btn-editorial         { font-size: 0.85rem; }
+    #step-display          { font-size: 0.8rem; }
+    .timer-container       { width: 148px; height: 148px; }
+}

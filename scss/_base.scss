@@ -4,6 +4,10 @@
     padding: 0;
 }
 
+@media (min-width: 1001px) {
+    html { font-size: 18px; }
+}
+
 .holo-bg {
     position: fixed;
     top: 0;

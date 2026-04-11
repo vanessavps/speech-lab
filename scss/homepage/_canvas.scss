@@ -50,7 +50,7 @@ main {
     &::before {
         content: "";
         position: absolute;
-        top: 0;
+        top: -1px;
         left: 5%;
         width: 90%;
         height: 1px;
