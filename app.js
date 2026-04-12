@@ -170,8 +170,9 @@ $(document).ready(function() {
                 sheet.style.transform = '';
                 return;
             }
+            e.preventDefault();
             sheet.style.transform = `translateY(${delta}px)`;
-        }, { passive: true });
+        }, { passive: false });
 
         sheet.addEventListener('touchend', () => {
             if (!dragging) return;
